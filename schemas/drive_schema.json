@@ -1,0 +1,111 @@
+{
+  "type": "record",
+  "name" : "drive",
+  "namespace" : "au.com.wesfarmers",
+  "fields": [
+    {
+      "name": "vehicle_id",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "trip_id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "datetime",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "velocity",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "accel_x",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "accel_y",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "accel_z",
+      "type": [
+        "null",
+        "double"
+      ],
+      "defalult": null
+    },
+    {
+      "name": "engine_coolant_temp",
+      "type": [
+        "null",
+        "float64"
+      ],
+      "default": null
+    },
+    {
+      "name": "eng_load",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "fuel_level",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "iat",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "rpm",
+      "type": [
+        "null",
+        "float64"
+      ],
+      "default": null
+    },
+    {
+      "name": "__index_level_0__",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    }
+  ]
+}

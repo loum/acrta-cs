@@ -1,0 +1,44 @@
+{
+  "paragraphs": [
+    {
+      "text": "%hive\n# Create the drive table",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-18 11:45:29.104",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1579347274469_246834133",
+      "id": "20200118-113434_1372449289",
+      "dateCreated": "2020-01-18 11:34:34.469",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "acrta-wh",
+  "id": "2EYJZ3KQW",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "sh:shared_process": [],
+    "hive:shared_process": [],
+    "spark:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
