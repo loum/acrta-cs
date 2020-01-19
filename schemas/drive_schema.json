@@ -103,7 +103,7 @@
       "name": "__index_level_0__",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     }

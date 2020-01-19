@@ -3,7 +3,7 @@
     {
       "text": "%hive\n-- Create the drive_avro AVRO table in Hive based on the AVRO Schema\nCREATE TABLE drive_avro ROW FORMAT SERDE \u0027org.apache.hadoop.hive.serde2.avro.AvroSerDe\u0027 STORED AS AVRO TBLPROPERTIES (\u0027avro.schema.url\u0027\u003d\u0027/tmp/schemas/drive_schema.json\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 06:40:04.938",
+      "dateUpdated": "2020-01-19 08:51:00.185",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -34,15 +34,15 @@
       "jobName": "paragraph_1579347274469_246834133",
       "id": "20200118-113434_1372449289",
       "dateCreated": "2020-01-18 11:34:34.469",
-      "dateStarted": "2020-01-19 01:50:05.438",
-      "dateFinished": "2020-01-19 01:50:12.835",
+      "dateStarted": "2020-01-19 08:51:00.212",
+      "dateFinished": "2020-01-19 08:51:04.127",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%hive\n-- Create the drive Parquet table in Hive based on drive_avro table\nCREATE EXTERNAL TABLE drive LIKE drive_avro STORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 06:39:27.913",
+      "dateUpdated": "2020-01-19 08:51:10.344",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -73,15 +73,15 @@
       "jobName": "paragraph_1579398652747_-607776968",
       "id": "20200119-015052_687052726",
       "dateCreated": "2020-01-19 01:50:52.747",
-      "dateStarted": "2020-01-19 02:20:35.781",
-      "dateFinished": "2020-01-19 02:20:36.034",
+      "dateStarted": "2020-01-19 08:51:10.369",
+      "dateFinished": "2020-01-19 08:51:10.623",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%hive\n-- ACRTA \"drive\" data load\nLOAD DATA INPATH \u0027hdfs:///tmp/data/drive/drive_*.parquet\u0027  INTO TABLE drive",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 02:21:44.004",
+      "dateUpdated": "2020-01-19 08:52:51.072",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -112,15 +112,15 @@
       "jobName": "paragraph_1579394003855_374132187",
       "id": "20200119-003323_1598368710",
       "dateCreated": "2020-01-19 00:33:23.855",
-      "dateStarted": "2020-01-19 02:21:44.066",
-      "dateFinished": "2020-01-19 02:21:45.055",
+      "dateStarted": "2020-01-19 08:52:51.094",
+      "dateFinished": "2020-01-19 08:52:51.570",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%hive\n-- Create the \"drive_sanitised\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS drive_sanitised\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_sanitised\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    LAG(t1.is_accelerating, 1, false) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime) AS previous_is_accelerating,\n    t1.is_accelerating AS is_accelerating,\n    (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime)) AS acceleration\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        velocity,\n        CASE WHEN ((LAG(velocity, 1, 0) OVER (PARTITION BY trip_id ORDER BY datetime) \u003e\u003d velocity)) THEN false ELSE true END AS is_accelerating\n    FROM drive\n    WHERE vehicle_id \u003d 1000500 \n    AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\n) t1",
+      "text": "%hive\n-- Create the \"drive_temp\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS drive_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\n--AS SELECT vehicle_id,\n--    trip_id,\n--    datetime,\n--    LAG(t1.is_accelerating, 1, false) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime) AS previous_is_accelerating,\n--    t1.is_accelerating AS is_accelerating,\n--    (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime)) AS acceleration\n--FROM (\n--    SELECT vehicle_id,\n--        trip_id,\n--        datetime,\n--        velocity,\n--       CASE WHEN ((LAG(velocity, 1, 0) OVER (PARTITION BY trip_id ORDER BY datetime) \u003e\u003d velocity)) THEN false ELSE true END AS is_accelerating\n--    FROM drive\n--    WHERE vehicle_id \u003d 1000500 \n--    AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\n--) t1\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 05:16:48.684",
+      "dateUpdated": "2020-01-19 12:31:08.286",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -151,15 +151,15 @@
       "jobName": "paragraph_1579394072314_1180159791",
       "id": "20200119-003432_1731334026",
       "dateCreated": "2020-01-19 00:34:32.314",
-      "dateStarted": "2020-01-19 05:16:48.774",
-      "dateFinished": "2020-01-19 05:18:44.068",
+      "dateStarted": "2020-01-19 12:31:08.299",
+      "dateFinished": "2020-01-19 12:33:53.003",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%hive\nDROP TABLE drive_sanitised",
+      "text": "%hive\nSELECT DISTINCT(vehicle_id) FROM drive",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 05:16:28.345",
+      "dateUpdated": "2020-01-19 12:39:28.204",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -175,7 +175,7 @@
                   "tableGridState": {},
                   "tableColumnTypeState": {
                     "names": {
-                      "tab_name": "string"
+                      "vehicle_id": "string"
                     },
                     "updated": false
                   },
@@ -210,8 +210,8 @@
         "code": "SUCCESS",
         "msg": [
           {
-            "type": "TEXT",
-            "data": "Query executed successfully. Affected rows : -1"
+            "type": "TABLE",
+            "data": "vehicle_id\n1000500\n1000501\n1000502\n1000503\n1000504\n1000505\n1000506\n1000507\n1000508\n1000509\n1000510\n1000511\n1000512\n1000513\n1000514\n1000515\n1000516\n1000517\n1000518\n1000519\n"
           }
         ]
       },
@@ -219,36 +219,24 @@
       "jobName": "paragraph_1579398742232_460461600",
       "id": "20200119-015222_1673569575",
       "dateCreated": "2020-01-19 01:52:22.234",
-      "dateStarted": "2020-01-19 05:16:28.475",
-      "dateFinished": "2020-01-19 05:16:29.045",
+      "dateStarted": "2020-01-19 12:39:09.845",
+      "dateFinished": "2020-01-19 12:39:28.023",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%hive\nSELECT * FROM drive_sanitised ORDER BY datetime",
+      "text": "%hive\n",
       "user": "anonymous",
-      "dateUpdated": "2020-01-19 05:14:23.922",
-      "config": {
-        "colWidth": 12.0,
-        "fontSize": 9.0,
-        "enabled": true,
-        "results": {},
-        "editorSetting": {
-          "language": "sql",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
-        "editorMode": "ace/mode/sql"
-      },
+      "dateUpdated": "2020-01-19 08:54:14.043",
+      "config": {},
       "settings": {
         "params": {},
         "forms": {}
       },
       "apps": [],
-      "jobName": "paragraph_1579409100085_2061618886",
-      "id": "20200119-044500_1690697643",
-      "dateCreated": "2020-01-19 04:45:00.085",
+      "jobName": "paragraph_1579424054042_1074916027",
+      "id": "20200119-085414_29732436",
+      "dateCreated": "2020-01-19 08:54:14.042",
       "status": "READY",
       "progressUpdateIntervalMs": 500
     }

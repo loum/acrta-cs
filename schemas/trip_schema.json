@@ -7,7 +7,7 @@
       "name": "vehicle_id",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },
@@ -23,7 +23,7 @@
       "name": "datetime",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },
@@ -55,7 +55,7 @@
       "name": "__index_level_0__",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     }

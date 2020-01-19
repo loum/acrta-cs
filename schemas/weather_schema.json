@@ -55,7 +55,7 @@
       "name": "temperature_data",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },
@@ -71,7 +71,7 @@
       "name": "precipitation_data",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },
@@ -87,7 +87,7 @@
       "name": "wind_ew_data",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },
@@ -103,7 +103,7 @@
       "name": "wind_ns_data",
       "type": [
         "null",
-        "bigint"
+        "long"
       ],
       "default": null
     },

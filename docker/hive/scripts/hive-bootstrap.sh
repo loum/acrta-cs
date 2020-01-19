@@ -16,6 +16,9 @@ $HADOOP_HOME/sbin/start-yarn.sh
 # and set them chmod g+w before you can create a table in Hive.
 runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp"
 runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp/data"
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp/data/drive"
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp/data/weather"
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp/data/trip"
 runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /tmp/schemas"
 runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /user"
 runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -mkdir /user/hive"
