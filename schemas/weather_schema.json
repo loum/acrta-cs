@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name" : "drive",
+  "name" : "weather",
   "namespace" : "au.com.wesfarmers",
   "fields": [
     {
-      "name": "vehicle_id",
+      "name": "x",
       "type": [
         "null",
         "long"
@@ -12,7 +12,7 @@
       "default": null
     },
     {
-      "name": "trip_id",
+      "name": "y",
       "type": [
         "null",
         "string"
@@ -20,15 +20,23 @@
       "default": null
     },
     {
-      "name": "datetime",
+      "name": "date",
       "type": [
         "null",
-        "long"
+        "int"
       ],
       "default": null
     },
     {
-      "name": "velocity",
+      "name": "time",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "lat",
       "type": [
         "null",
         "double"
@@ -36,7 +44,7 @@
       "default": null
     },
     {
-      "name": "accel_x",
+      "name": "lon",
       "type": [
         "null",
         "double"
@@ -44,66 +52,66 @@
       "default": null
     },
     {
-      "name": "accel_y",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "accel_z",
-      "type": [
-        "null",
-        "double"
-      ],
-      "defalult": null
-    },
-    {
-      "name": "engine_coolant_temp",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "eng_load",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "fuel_level",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "iat",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "rpm",
-      "type": [
-        "null",
-        "double"
-      ],
-      "default": null
-    },
-    {
-      "name": "__index_level_0__",
+      "name": "temperature_data",
       "type": [
         "null",
         "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "temperature_unit",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "precipitation_data",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "precipitation_unit",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "wind_ew_data",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "wind_ew_unit",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "wind_ns_data",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "wind_ns_unit",
+      "type": [
+        "null",
+        "string"
       ],
       "default": null
     }

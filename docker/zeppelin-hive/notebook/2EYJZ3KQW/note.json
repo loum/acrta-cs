@@ -1,9 +1,9 @@
 {
   "paragraphs": [
     {
-      "text": "%hive\n# Create the drive table",
+      "text": "%hive\n-- Create the drive_avro AVRO table in Hive based on the AVRO Schema\nCREATE TABLE drive_avro ROW FORMAT SERDE \u0027org.apache.hadoop.hive.serde2.avro.AvroSerDe\u0027 STORED AS AVRO TBLPROPERTIES (\u0027avro.schema.url\u0027\u003d\u0027/tmp/schemas/drive_schema.json\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2020-01-18 11:45:29.104",
+      "dateUpdated": "2020-01-19 06:40:04.938",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -12,6 +12,231 @@
         "editorSetting": {
           "language": "sql",
           "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579347274469_246834133",
+      "id": "20200118-113434_1372449289",
+      "dateCreated": "2020-01-18 11:34:34.469",
+      "dateStarted": "2020-01-19 01:50:05.438",
+      "dateFinished": "2020-01-19 01:50:12.835",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\n-- Create the drive Parquet table in Hive based on drive_avro table\nCREATE EXTERNAL TABLE drive LIKE drive_avro STORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-19 06:39:27.913",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579398652747_-607776968",
+      "id": "20200119-015052_687052726",
+      "dateCreated": "2020-01-19 01:50:52.747",
+      "dateStarted": "2020-01-19 02:20:35.781",
+      "dateFinished": "2020-01-19 02:20:36.034",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\n-- ACRTA \"drive\" data load\nLOAD DATA INPATH \u0027hdfs:///tmp/data/drive/drive_*.parquet\u0027  INTO TABLE drive",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-19 02:21:44.004",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579394003855_374132187",
+      "id": "20200119-003323_1598368710",
+      "dateCreated": "2020-01-19 00:33:23.855",
+      "dateStarted": "2020-01-19 02:21:44.066",
+      "dateFinished": "2020-01-19 02:21:45.055",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\n-- Create the \"drive_sanitised\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS drive_sanitised\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_sanitised\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    LAG(t1.is_accelerating, 1, false) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime) AS previous_is_accelerating,\n    t1.is_accelerating AS is_accelerating,\n    (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY t1.trip_id ORDER BY t1.datetime)) AS acceleration\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        velocity,\n        CASE WHEN ((LAG(velocity, 1, 0) OVER (PARTITION BY trip_id ORDER BY datetime) \u003e\u003d velocity)) THEN false ELSE true END AS is_accelerating\n    FROM drive\n    WHERE vehicle_id \u003d 1000500 \n    AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\n) t1",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-19 05:16:48.684",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579394072314_1180159791",
+      "id": "20200119-003432_1731334026",
+      "dateCreated": "2020-01-19 00:34:32.314",
+      "dateStarted": "2020-01-19 05:16:48.774",
+      "dateFinished": "2020-01-19 05:18:44.068",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\nDROP TABLE drive_sanitised",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-19 05:16:28.345",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "tab_name": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579398742232_460461600",
+      "id": "20200119-015222_1673569575",
+      "dateCreated": "2020-01-19 01:52:22.234",
+      "dateStarted": "2020-01-19 05:16:28.475",
+      "dateFinished": "2020-01-19 05:16:29.045",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\nSELECT * FROM drive_sanitised ORDER BY datetime",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-19 05:14:23.922",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql"
@@ -21,9 +246,9 @@
         "forms": {}
       },
       "apps": [],
-      "jobName": "paragraph_1579347274469_246834133",
-      "id": "20200118-113434_1372449289",
-      "dateCreated": "2020-01-18 11:34:34.469",
+      "jobName": "paragraph_1579409100085_2061618886",
+      "id": "20200119-044500_1690697643",
+      "dateCreated": "2020-01-19 04:45:00.085",
       "status": "READY",
       "progressUpdateIntervalMs": 500
     }
@@ -33,9 +258,8 @@
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {
-    "sh:shared_process": [],
-    "hive:shared_process": [],
-    "spark:shared_process": []
+    "spark:shared_process": [],
+    "hive:shared_process": []
   },
   "config": {
     "isZeppelinNotebookCronEnable": false

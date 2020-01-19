@@ -68,3 +68,6 @@ metastore_db
 # Temporary integration test file directories
 cmsearchdiffer/tests/files/es/
 cmsearchdiffer/tests/files/ods/
+
+# Zeppelin logs
+logs

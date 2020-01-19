@@ -29,4 +29,9 @@ runuser -l hdfs -c "$HIVE_HOME/bin/schematool -dbType derby -initSchema"
 # Start the Hiverserver2.
 runuser -l hdfs -c "HADOOP_HOME=$HADOOP_HOME $HIVE_HOME/bin/hiveserver2 > /tmp/hiveserver2.out 2>&1 &"
 
+# Add the ACRTA data warehouse schema files to HDFS.
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -put /schemas/drive_schema.json /tmp/schemas"
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -put /schemas/trip_schema.json /tmp/schemas"
+runuser -l hdfs -c "$HADOOP_HOME/bin/hadoop fs -put /schemas/weather_schema.json /tmp/schemas"
+
 /bin/bash

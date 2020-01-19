@@ -1,0 +1,63 @@
+{
+  "type": "record",
+  "name" : "trip",
+  "namespace" : "au.com.wesfarmers",
+  "fields": [
+    {
+      "name": "vehicle_id",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "trip_id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "datetime",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    },
+    {
+      "name": "lat",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "long",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "velocity",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "__index_level_0__",
+      "type": [
+        "null",
+        "bigint"
+      ],
+      "default": null
+    }
+  ]
+}
