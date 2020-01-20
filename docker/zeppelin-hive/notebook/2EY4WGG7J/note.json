@@ -3,9 +3,9 @@
     {
       "text": "%hive\nDESCRIBE drive_temp",
       "user": "anonymous",
-      "dateUpdated": "2020-01-20 04:05:30.204",
+      "dateUpdated": "2020-01-20 11:34:00.268",
       "config": {
-        "tableHide": true,
+        "tableHide": false,
         "editorSetting": {
           "language": "sql",
           "editOnDblClick": false,
@@ -65,8 +65,77 @@
       "jobName": "paragraph_1579482869163_1600407271",
       "id": "20200116-073520_481206889",
       "dateCreated": "2020-01-20 01:14:29.164",
-      "dateStarted": "2020-01-20 01:41:38.841",
-      "dateFinished": "2020-01-20 01:41:39.299",
+      "dateStarted": "2020-01-20 11:34:00.288",
+      "dateFinished": "2020-01-20 11:34:00.342",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\nDESC drive",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-20 12:06:32.650",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "col_name": "string",
+                      "data_type": "string",
+                      "comment": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "col_name\tdata_type\tcomment\nvehicle_id\tbigint\t\ntrip_id\tstring\t\ndatetime\tbigint\t\nvelocity\tdouble\t\naccel_x\tdouble\t\naccel_y\tdouble\t\naccel_z\tdouble\t\nengine_coolant_temp\tdouble\t\neng_load\tdouble\t\nfuel_level\tdouble\t\niat\tdouble\t\nrpm\tdouble\t\n__index_level_0__\tbigint\t\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579521985948_2125620841",
+      "id": "20200120-120625_943137523",
+      "dateCreated": "2020-01-20 12:06:25.948",
+      "dateStarted": "2020-01-20 12:06:31.914",
+      "dateFinished": "2020-01-20 12:06:31.962",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },

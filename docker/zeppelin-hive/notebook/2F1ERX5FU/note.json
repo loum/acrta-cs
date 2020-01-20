@@ -1,0 +1,103 @@
+{
+  "paragraphs": [
+    {
+      "text": "%hive\n-- Every vehicle aggregated at week start date (Monday) for the complete week in YYYY-MM-DD format.\n--\nSELECT torque_util_60pct_cnt.vehicle_id AS vehicle_id,\n    torque_util_60pct_cnt.ft_torque_util_60pct_s AS ft_torque_util_60pct_s,\n    torque_util_70pct_cnt.ft_torque_util_70pct_s AS ft_torque_util_70pct_s,\n    torque_util_80pct_cnt.ft_torque_util_80pct_s AS ft_torque_util_80pct_s,\n    torque_util_90pct_cnt.ft_torque_util_90pct_s AS ft_torque_util_90pct_s\nFROM (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_60pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.6\n        AND torque_utilization \u003c 0.7\n    ) torque_util_60pct\n    GROUP BY vehicle_id\n) torque_util_60pct_cnt\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_70pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.7\n        AND torque_utilization \u003c 0.8\n    ) torque_util_70pct\n    GROUP BY vehicle_id\n) torque_util_70pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_70pct_cnt.vehicle_id\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_80pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.8\n        AND torque_utilization \u003c 0.9\n    ) torque_util_80pct\n    GROUP BY vehicle_id\n) torque_util_80pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_80pct_cnt.vehicle_id\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_90pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.9\n        AND torque_utilization \u003c 1\n    ) torque_util_90pct\n    GROUP BY vehicle_id\n) torque_util_90pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_90pct_cnt.vehicle_id\nORDER BY vehicle_id",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-20 13:20:08.531",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "vehicle_id": "string",
+                      "ft_torque_util_60pct_s": "string",
+                      "ft_torque_util_70pct_s": "string",
+                      "ft_torque_util_80pct_s": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "vehicle_id\tft_torque_util_60pct_s\tft_torque_util_70pct_s\tft_torque_util_80pct_s\n1000500\t2\t2408\t42\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579524999394_1620036683",
+      "id": "20200117-081923_746842157",
+      "dateCreated": "2020-01-20 12:56:39.394",
+      "dateStarted": "2020-01-20 13:16:33.155",
+      "dateFinished": "2020-01-20 13:17:52.276",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-20 12:56:39.397",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1579524999397_1962525474",
+      "id": "20200119-171335_1174163075",
+      "dateCreated": "2020-01-20 12:56:39.397",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "engine_features",
+  "id": "2F1ERX5FU",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "spark:shared_process": [],
+    "hive:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
