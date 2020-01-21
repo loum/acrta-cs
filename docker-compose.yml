@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  hive:
+    image: loum/acrta-hive:latest
+    container_name: hive
+    volumes:
+      - ./data:/data
+      - ./schemas:/schemas
+      - ./scripts:/scripts
+    ports:
+      - 10000:10000
+
+  zeppelin:
+    image: loum/zeppelin-hive:latest
+    container_name: zeppelin
+    environment:
+      ZEPPELIN_LOG_DIR: /logs
+      ZEPPELIN_NOTEBOOK_DIR: /notebook
+      ZEPPELIN_ADDR: 0.0.0.0
+    volumes:
+      - ./docker/zeppelin-hive/notebook:/notebook
+      - ./logs:/logs
+    ports:
+      - 8080:8080
