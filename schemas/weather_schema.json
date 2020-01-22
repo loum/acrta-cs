@@ -23,7 +23,7 @@
       "name": "date",
       "type": [
         "null",
-        "date"
+        "int"
       ],
       "default": null
     },
