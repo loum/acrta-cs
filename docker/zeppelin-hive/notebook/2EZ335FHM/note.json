@@ -1,0 +1,177 @@
+{
+  "paragraphs": [
+    {
+      "text": "%hive\nshow tables",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-22 21:14:55.620",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "tab_name": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "tab_name\ndrive\ndrive_avro\ndrive_temp\nengine_features_t1\nengine_features_t2\nengine_temp\ntrip\ntrip_avro\nvehicle\nweather\nweather_avro\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579707846833_-554915825",
+      "id": "20200122-154406_132584702",
+      "dateCreated": "2020-01-22 15:44:06.833",
+      "dateStarted": "2020-01-22 21:14:55.632",
+      "dateFinished": "2020-01-22 21:14:55.797",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\nselect * FROM weather_avro",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-22 21:15:18.808",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "weather_avro.x": "string",
+                      "weather_avro.y": "string",
+                      "weather_avro.date": "string",
+                      "weather_avro.time": "string",
+                      "weather_avro.lat": "string",
+                      "weather_avro.lon": "string",
+                      "weather_avro.temperature_data": "string",
+                      "weather_avro.temperature_unit": "string",
+                      "weather_avro.precipitation_data": "string",
+                      "weather_avro.precipitation_unit": "string",
+                      "weather_avro.wind_ew_data": "string",
+                      "weather_avro.wind_ew_unit": "string",
+                      "weather_avro.wind_ns_data": "string",
+                      "weather_avro.wind_ns_unit": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "weather_avro.x\tweather_avro.y\tweather_avro.date\tweather_avro.time\tweather_avro.lat\tweather_avro.lon\tweather_avro.temperature_data\tweather_avro.temperature_unit\tweather_avro.precipitation_data\tweather_avro.precipitation_unit\tweather_avro.wind_ew_data\tweather_avro.wind_ew_unit\tweather_avro.wind_ns_data\tweather_avro.wind_ns_unit\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579707953434_203166061",
+      "id": "20200122-154553_1144402539",
+      "dateCreated": "2020-01-22 15:45:53.434",
+      "dateStarted": "2020-01-22 21:15:18.131",
+      "dateFinished": "2020-01-22 21:15:18.268",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-22 15:46:01.117",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1579707961117_-1945662492",
+      "id": "20200122-154601_2014935122",
+      "dateCreated": "2020-01-22 15:46:01.117",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "weather_scratchpad",
+  "id": "2EZ335FHM",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "spark:shared_process": [],
+    "hive:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

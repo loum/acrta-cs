@@ -2,7 +2,7 @@
 CREATE TABLE drive_avro
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
 STORED AS AVRO
-TBLPROPERTIES ('avro.schema.url'='/tmp/schemas/drive_schema.json');
+TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/drive_schema.json');
 
 -- Create the drive Parquet table in Hive based on drive_avro table
 CREATE EXTERNAL TABLE drive
@@ -15,7 +15,7 @@ TBLPROPERTIES ("parquet.compression"="SNAPPY");
 CREATE TABLE trip_avro
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
 STORED AS AVRO
-TBLPROPERTIES ('avro.schema.url'='/tmp/schemas/trip_schema.json');
+TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/trip_schema.json');
 
 -- Create the trip Parquet table in Hive based on trip_avro table
 CREATE EXTERNAL TABLE trip
@@ -28,7 +28,7 @@ TBLPROPERTIES ("parquet.compression"="SNAPPY");
 CREATE TABLE weather_avro
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
 STORED AS AVRO
-TBLPROPERTIES ('avro.schema.url'='/tmp/schemas/weather_schema.json');
+TBLPROPERTIES ('avro.schema.url'='/user/hive/schemas/weather_schema.json');
 
 -- Create the weather Parquet table in Hive based on weather_avro table
 CREATE EXTERNAL TABLE weather

@@ -1,19 +1,13 @@
 {
   "paragraphs": [
     {
-      "text": "%hive\n-- Every vehicle aggregated at week start date (Monday) for the complete week in YYYY-MM-DD format.\n--\nSELECT torque_util_60pct_cnt.vehicle_id AS vehicle_id,\n    torque_util_60pct_cnt.ft_torque_util_60pct_s AS ft_torque_util_60pct_s,\n    torque_util_70pct_cnt.ft_torque_util_70pct_s AS ft_torque_util_70pct_s,\n    torque_util_80pct_cnt.ft_torque_util_80pct_s AS ft_torque_util_80pct_s,\n    torque_util_90pct_cnt.ft_torque_util_90pct_s AS ft_torque_util_90pct_s\nFROM (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_60pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.6\n        AND torque_utilization \u003c 0.7\n    ) torque_util_60pct\n    GROUP BY vehicle_id\n) torque_util_60pct_cnt\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_70pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.7\n        AND torque_utilization \u003c 0.8\n    ) torque_util_70pct\n    GROUP BY vehicle_id\n) torque_util_70pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_70pct_cnt.vehicle_id\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_80pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.8\n        AND torque_utilization \u003c 0.9\n    ) torque_util_80pct\n    GROUP BY vehicle_id\n) torque_util_80pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_80pct_cnt.vehicle_id\nJOIN (\n    SELECT vehicle_id, COUNT(*) AS ft_torque_util_90pct_s\n    FROM (\n        SELECT * FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.9\n        AND torque_utilization \u003c 1\n    ) torque_util_90pct\n    GROUP BY vehicle_id\n) torque_util_90pct_cnt\nON torque_util_60pct_cnt.vehicle_id \u003d torque_util_90pct_cnt.vehicle_id\nORDER BY vehicle_id",
+      "text": "%hive\n-- Every vehicle aggregated at week start date (Monday) for the complete week in YYYY-MM-DD format.\n--\nCREATE TABLE IF NOT EXISTS engine_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT torque_util_60pct_cnt.vehicle_id AS vehicle_id,\n    torque_util_60pct_cnt.week_start_date AS week_start_date,\n    torque_util_60pct_cnt.ft_torque_util_60pct_s AS ft_torque_util_60pct_s,\n    torque_util_70pct_cnt.ft_torque_util_70pct_s AS ft_torque_util_70pct_s,\n    torque_util_80pct_cnt.ft_torque_util_80pct_s AS ft_torque_util_80pct_s,\n    torque_util_90pct_cnt.ft_torque_util_90pct_s AS ft_torque_util_90pct_s,\n    hp_util_50pct_cnt.ft_horsepower_util_50pct_s AS ft_horsepower_util_50pct_s,\n    hp_util_60pct_cnt.ft_horsepower_util_60pct_s AS ft_horsepower_util_60pct_s,\n    hp_util_70pct_cnt.ft_horsepower_util_70pct_s AS ft_horsepower_util_70pct_s,\n    hp_util_80pct_cnt.ft_horsepower_util_80pct_s AS ft_horsepower_util_80pct_s,\n    rpm_util_50pct_cnt.ft_rpm_util_50pct_s AS ft_rpm_util_50pct_s,\n    rpm_util_60pct_cnt.ft_rpm_util_60pct_s AS ft_rpm_util_60pct_s\nFROM (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_torque_util_60pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.6 AND torque_utilization \u003c 0.7\n    ) torque_util_60pct\n    GROUP BY vehicle_id, week_start_date\n) torque_util_60pct_cnt\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_torque_util_70pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.7 AND torque_utilization \u003c 0.8\n    ) torque_util_70pct\n    GROUP BY vehicle_id, week_start_date\n) torque_util_70pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d torque_util_70pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d torque_util_70pct_cnt.week_start_date\n)\n\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_torque_util_80pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.8 AND torque_utilization \u003c 0.9\n    ) torque_util_80pct\n    GROUP BY vehicle_id, week_start_date\n) torque_util_80pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d torque_util_80pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d torque_util_80pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_torque_util_90pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE torque_utilization \u003e\u003d 0.9 AND torque_utilization \u003c 1\n    ) torque_util_80pct\n    GROUP BY vehicle_id, week_start_date\n) torque_util_90pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d torque_util_90pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d torque_util_90pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_horsepower_util_50pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE horsepower_utilization \u003e\u003d 0.5 AND horsepower_utilization \u003c 0.6\n    ) hp_util_50pct\n    GROUP BY vehicle_id, week_start_date\n) hp_util_50pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d hp_util_50pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d hp_util_50pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_horsepower_util_60pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE horsepower_utilization \u003e\u003d 0.6 AND horsepower_utilization \u003c 0.7\n    ) hp_util_60pct\n    GROUP BY vehicle_id, week_start_date\n) hp_util_60pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d hp_util_60pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d hp_util_60pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_horsepower_util_70pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE horsepower_utilization \u003e\u003d 0.7 AND horsepower_utilization \u003c 0.8\n    ) hp_util_80pct\n    GROUP BY vehicle_id, week_start_date\n) hp_util_70pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d hp_util_70pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d hp_util_70pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_horsepower_util_80pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE horsepower_utilization \u003e\u003d 0.8 AND horsepower_utilization \u003c 0.9\n    ) hp_util_80pct\n    GROUP BY vehicle_id, week_start_date\n) hp_util_80pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d hp_util_80pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d hp_util_80pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_rpm_util_50pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE rpm_utilization \u003e\u003d 0.5 AND horsepower_utilization \u003c 0.6\n    ) rpm_util_50pct\n    GROUP BY vehicle_id, week_start_date\n) rpm_util_50pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d rpm_util_50pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d rpm_util_50pct_cnt.week_start_date\n)\nLEFT OUTER JOIN (\n    SELECT vehicle_id, week_start_date, COUNT(*) AS ft_rpm_util_60pct_s\n    FROM (\n        SELECT vehicle_id, week_start_date\n        FROM engine_temp\n        WHERE rpm_utilization \u003e\u003d 0.6 AND horsepower_utilization \u003c 0.7\n    ) rpm_util_60pct\n    GROUP BY vehicle_id, week_start_date\n) rpm_util_60pct_cnt\nON (\n    torque_util_60pct_cnt.vehicle_id \u003d rpm_util_60pct_cnt.vehicle_id\n    AND torque_util_60pct_cnt.week_start_date \u003d rpm_util_60pct_cnt.week_start_date\n)\nORDER BY vehicle_id, week_start_date\n",
       "user": "anonymous",
-      "dateUpdated": "2020-01-20 13:22:09.870",
+      "dateUpdated": "2020-01-22 21:40:29.645",
       "config": {
-        "editorSetting": {
-          "language": "sql",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
         "colWidth": 12.0,
-        "editorMode": "ace/mode/sql",
         "fontSize": 9.0,
+        "enabled": true,
         "results": {
           "0": {
             "graph": {
@@ -26,10 +20,17 @@
                   "tableColumnTypeState": {
                     "names": {
                       "vehicle_id": "string",
+                      "week_start_date": "string",
                       "ft_torque_util_60pct_s": "string",
                       "ft_torque_util_70pct_s": "string",
                       "ft_torque_util_80pct_s": "string",
-                      "ft_torque_util_90pct_s": "string"
+                      "ft_torque_util_90pct_s": "string",
+                      "ft_horsepower_util_50pct_s": "string",
+                      "ft_horsepower_util_60pct_s": "string",
+                      "ft_horsepower_util_70pct_s": "string",
+                      "ft_horsepower_util_80pct_s": "string",
+                      "ft_rpm_util_50pct_s": "string",
+                      "ft_rpm_util_60pct_s": "string"
                     },
                     "updated": false
                   },
@@ -47,7 +48,13 @@
             }
           }
         },
-        "enabled": true
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
       },
       "settings": {
         "params": {},
@@ -57,35 +64,73 @@
         "code": "SUCCESS",
         "msg": [
           {
-            "type": "TABLE",
-            "data": "vehicle_id\tft_torque_util_60pct_s\tft_torque_util_70pct_s\tft_torque_util_80pct_s\tft_torque_util_90pct_s\n"
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
           }
         ]
       },
       "apps": [],
-      "jobName": "paragraph_1579524999394_1620036683",
-      "id": "20200117-081923_746842157",
-      "dateCreated": "2020-01-20 12:56:39.394",
-      "dateStarted": "2020-01-20 13:20:08.538",
-      "dateFinished": "2020-01-20 13:22:09.803",
+      "jobName": "paragraph_1579702319835_1558290495",
+      "id": "20200122-141159_2015466826",
+      "dateCreated": "2020-01-22 14:11:59.835",
+      "dateStarted": "2020-01-22 21:11:38.322",
+      "dateFinished": "2020-01-22 21:16:09.372",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%hive\nDROP TABLE engine_features",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-22 21:11:32.667",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1579727304879_-1568683721",
+      "id": "20200122-210824_2103851057",
+      "dateCreated": "2020-01-22 21:08:24.879",
+      "dateStarted": "2020-01-22 21:11:32.680",
+      "dateFinished": "2020-01-22 21:11:33.079",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%hive\n",
       "user": "anonymous",
-      "dateUpdated": "2020-01-20 12:56:39.397",
+      "dateUpdated": "2020-01-22 21:11:32.668",
       "config": {},
       "settings": {
         "params": {},
         "forms": {}
       },
       "apps": [],
-      "jobName": "paragraph_1579524999397_1962525474",
-      "id": "20200119-171335_1174163075",
-      "dateCreated": "2020-01-20 12:56:39.397",
+      "jobName": "paragraph_1579727492667_-1643963128",
+      "id": "20200122-211132_1662419920",
+      "dateCreated": "2020-01-22 21:11:32.667",
       "status": "READY",
-      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     }
   ],

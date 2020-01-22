@@ -52,7 +52,7 @@
         },
         "common.max_count": {
           "name": "common.max_count",
-          "value": "1000",
+          "value": "10000",
           "type": "number"
         },
         "default.precode": {
@@ -91,9 +91,14 @@
         },
         "zeppelin.jdbc.maxRows": {
           "name": "zeppelin.jdbc.maxRows",
-          "value": "1000",
+          "value": "10000",
           "type": "number"
-        }
+        },
+        "zeppelin.interpreter.output.limit": {
+          "name": "zeppelin.interpreter.output.limit",
+          "value": "52428800",
+          "type": "number"
+         }
       },
       "status": "READY",
       "interpreterGroup": [

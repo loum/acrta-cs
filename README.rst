@@ -42,6 +42,12 @@ ACRTA Case Study Infrastructure Build and Setup - "I'm in a hurry" Mode
 
 `Browse to <http://localhost:8080>`_ to see the Zeppelin dashboard
 
+Click on the "Run all paragraphs" icon for the following notebooks in this order::
+
+# `acrta_dwh`
+# `drive_features`
+# `engine_features`
+
 ***************************************************************
 ACRTA Case Study Infrastructure Build and Setup - Detailed Mode
 ***************************************************************

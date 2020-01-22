@@ -1,0 +1,44 @@
+{
+  "paragraphs": [
+    {
+      "text": "%hive",
+      "user": "anonymous",
+      "dateUpdated": "2020-01-22 15:44:42.569",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1579707866137_2038424911",
+      "id": "20200122-154426_173885084",
+      "dateCreated": "2020-01-22 15:44:26.137",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "weather_features",
+  "id": "2EYGG3WR1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "spark:shared_process": [],
+    "hive:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
