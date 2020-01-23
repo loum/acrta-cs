@@ -3,7 +3,7 @@
     {
       "text": "%hive\nshow tables",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:14:55.620",
+      "dateUpdated": "2020-01-23 00:43:20.191",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -53,7 +53,7 @@
         "msg": [
           {
             "type": "TABLE",
-            "data": "tab_name\ndrive\ndrive_avro\ndrive_temp\nengine_features_t1\nengine_features_t2\nengine_temp\ntrip\ntrip_avro\nvehicle\nweather\nweather_avro\n"
+            "data": "tab_name\ndrive\ndrive_avro\ntrip\ntrip_avro\nvehicle\nweather\nweather_avro\n"
           }
         ]
       },
@@ -61,15 +61,15 @@
       "jobName": "paragraph_1579707846833_-554915825",
       "id": "20200122-154406_132584702",
       "dateCreated": "2020-01-22 15:44:06.833",
-      "dateStarted": "2020-01-22 21:14:55.632",
-      "dateFinished": "2020-01-22 21:14:55.797",
+      "dateStarted": "2020-01-23 00:43:20.233",
+      "dateFinished": "2020-01-23 00:43:22.352",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%hive\nselect * FROM weather_avro",
+      "text": "%hive\nselect * FROM weather",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:15:18.808",
+      "dateUpdated": "2020-01-23 00:43:36.851",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -128,11 +128,11 @@
         "forms": {}
       },
       "results": {
-        "code": "SUCCESS",
+        "code": "ERROR",
         "msg": [
           {
-            "type": "TABLE",
-            "data": "weather_avro.x\tweather_avro.y\tweather_avro.date\tweather_avro.time\tweather_avro.lat\tweather_avro.lon\tweather_avro.temperature_data\tweather_avro.temperature_unit\tweather_avro.precipitation_data\tweather_avro.precipitation_unit\tweather_avro.wind_ew_data\tweather_avro.wind_ew_unit\tweather_avro.wind_ns_data\tweather_avro.wind_ns_unit\n"
+            "type": "TEXT",
+            "data": "org.apache.hive.service.cli.HiveSQLException: java.io.IOException: org.apache.parquet.io.ParquetDecodingException: Can not read value at 0 in block -1 in file hdfs://localhost:9000/user/hive/warehouse/weather/part-00000-tid-6948431846308939962-d261a692-da15-442f-8f9f-0021ff4fa635-1006-c000.snappy.parquet\n\tat org.apache.hive.jdbc.Utils.verifySuccess(Utils.java:300)\n\tat org.apache.hive.jdbc.Utils.verifySuccessWithInfo(Utils.java:286)\n\tat org.apache.hive.jdbc.HiveQueryResultSet.next(HiveQueryResultSet.java:374)\n\tat org.apache.commons.dbcp2.DelegatingResultSet.next(DelegatingResultSet.java:191)\n\tat org.apache.commons.dbcp2.DelegatingResultSet.next(DelegatingResultSet.java:191)\n\tat org.apache.zeppelin.jdbc.JDBCInterpreter.getResults(JDBCInterpreter.java:567)\n\tat org.apache.zeppelin.jdbc.JDBCInterpreter.executeSql(JDBCInterpreter.java:749)\n\tat org.apache.zeppelin.jdbc.JDBCInterpreter.interpret(JDBCInterpreter.java:820)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:632)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:188)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler$JobRunner.run(ParallelScheduler.java:162)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.hive.service.cli.HiveSQLException: java.io.IOException: org.apache.parquet.io.ParquetDecodingException: Can not read value at 0 in block -1 in file hdfs://localhost:9000/user/hive/warehouse/weather/part-00000-tid-6948431846308939962-d261a692-da15-442f-8f9f-0021ff4fa635-1006-c000.snappy.parquet\n\tat org.apache.hive.service.cli.operation.SQLOperation.getNextRowSet(SQLOperation.java:465)\n\tat org.apache.hive.service.cli.operation.OperationManager.getOperationNextRowSet(OperationManager.java:309)\n\tat org.apache.hive.service.cli.session.HiveSessionImpl.fetchResults(HiveSessionImpl.java:905)\n\tat org.apache.hive.service.cli.CLIService.fetchResults(CLIService.java:561)\n\tat org.apache.hive.service.cli.thrift.ThriftCLIService.FetchResults(ThriftCLIService.java:786)\n\tat org.apache.hive.service.rpc.thrift.TCLIService$Processor$FetchResults.getResult(TCLIService.java:1837)\n\tat org.apache.hive.service.rpc.thrift.TCLIService$Processor$FetchResults.getResult(TCLIService.java:1822)\n\tat org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)\n\tat org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)\n\tat org.apache.hive.service.auth.TSetIpAddressProcessor.process(TSetIpAddressProcessor.java:56)\n\tat org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:286)\n\t... 3 more\nCaused by: java.io.IOException: org.apache.parquet.io.ParquetDecodingException: Can not read value at 0 in block -1 in file hdfs://localhost:9000/user/hive/warehouse/weather/part-00000-tid-6948431846308939962-d261a692-da15-442f-8f9f-0021ff4fa635-1006-c000.snappy.parquet\n\tat org.apache.hadoop.hive.ql.exec.FetchOperator.getNextRow(FetchOperator.java:602)\n\tat org.apache.hadoop.hive.ql.exec.FetchOperator.pushRow(FetchOperator.java:509)\n\tat org.apache.hadoop.hive.ql.exec.FetchTask.fetch(FetchTask.java:146)\n\tat org.apache.hadoop.hive.ql.Driver.getResults(Driver.java:2691)\n\tat org.apache.hadoop.hive.ql.reexec.ReExecDriver.getResults(ReExecDriver.java:229)\n\tat org.apache.hive.service.cli.operation.SQLOperation.getNextRowSet(SQLOperation.java:460)\n\t... 13 more\nCaused by: java.lang.RuntimeException: org.apache.parquet.io.ParquetDecodingException:Can not read value at 0 in block -1 in file hdfs://localhost:9000/user/hive/warehouse/weather/part-00000-tid-6948431846308939962-d261a692-da15-442f-8f9f-0021ff4fa635-1006-c000.snappy.parquet\n\tat org.apache.parquet.hadoop.InternalParquetRecordReader.nextKeyValue(InternalParquetRecordReader.java:251)\n\tat org.apache.parquet.hadoop.ParquetRecordReader.nextKeyValue(ParquetRecordReader.java:207)\n\tat org.apache.hadoop.hive.ql.io.parquet.read.ParquetRecordReaderWrapper.\u003cinit\u003e(ParquetRecordReaderWrapper.java:98)\n\tat org.apache.hadoop.hive.ql.io.parquet.read.ParquetRecordReaderWrapper.\u003cinit\u003e(ParquetRecordReaderWrapper.java:60)\n\tat org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat.getRecordReader(MapredParquetInputFormat.java:93)\n\tat org.apache.hadoop.hive.ql.exec.FetchOperator$FetchInputFormatSplit.getRecordReader(FetchOperator.java:776)\n\tat org.apache.hadoop.hive.ql.exec.FetchOperator.getRecordReader(FetchOperator.java:344)\n\tat org.apache.hadoop.hive.ql.exec.FetchOperator.getNextRow(FetchOperator.java:540)\n\t... 18 more\nCaused by: java.lang.UnsupportedOperationException: org.apache.parquet.column.values.dictionary.PlainValuesDictionary$PlainLongDictionary\n\tat org.apache.parquet.column.Dictionary.decodeToBinary(Dictionary.java:41)\n\tat org.apache.hadoop.hive.ql.io.parquet.convert.ETypeConverter$BinaryConverter.setDictionary(ETypeConverter.java:473)\n\tat org.apache.parquet.column.impl.ColumnReaderImpl.\u003cinit\u003e(ColumnReaderImpl.java:341)\n\tat org.apache.parquet.column.impl.ColumnReadStoreImpl.newMemColumnReader(ColumnReadStoreImpl.java:80)\n\tat org.apache.parquet.column.impl.ColumnReadStoreImpl.getColumnReader(ColumnReadStoreImpl.java:75)\n\tat org.apache.parquet.io.RecordReaderImplementation.\u003cinit\u003e(RecordReaderImplementation.java:271)\n\tat org.apache.parquet.io.MessageColumnIO$1.visit(MessageColumnIO.java:147)\n\tat org.apache.parquet.io.MessageColumnIO$1.visit(MessageColumnIO.java:109)\n\tat org.apache.parquet.filter2.compat.FilterCompat$NoOpFilter.accept(FilterCompat.java:165)\n\tat org.apache.parquet.io.MessageColumnIO.getRecordReader(MessageColumnIO.java:109)\n\tat org.apache.parquet.hadoop.InternalParquetRecordReader.checkRead(InternalParquetRecordReader.java:137)\n\tat org.apache.parquet.hadoop.InternalParquetRecordReader.nextKeyValue(InternalParquetRecordReader.java:222)\n\t... 25 more\n"
           }
         ]
       },
@@ -140,9 +140,9 @@
       "jobName": "paragraph_1579707953434_203166061",
       "id": "20200122-154553_1144402539",
       "dateCreated": "2020-01-22 15:45:53.434",
-      "dateStarted": "2020-01-22 21:15:18.131",
-      "dateFinished": "2020-01-22 21:15:18.268",
-      "status": "FINISHED",
+      "dateStarted": "2020-01-23 00:43:36.878",
+      "dateFinished": "2020-01-23 00:43:37.593",
+      "status": "ERROR",
       "progressUpdateIntervalMs": 500
     },
     {
@@ -167,7 +167,6 @@
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {
-    "spark:shared_process": [],
     "hive:shared_process": []
   },
   "config": {

@@ -79,45 +79,6 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%hive\nDROP TABLE engine_features",
-      "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:11:32.667",
-      "config": {
-        "colWidth": 12.0,
-        "fontSize": 9.0,
-        "enabled": true,
-        "results": {},
-        "editorSetting": {
-          "language": "scala",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
-        "editorMode": "ace/mode/scala"
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "results": {
-        "code": "SUCCESS",
-        "msg": [
-          {
-            "type": "TEXT",
-            "data": "Query executed successfully. Affected rows : -1"
-          }
-        ]
-      },
-      "apps": [],
-      "jobName": "paragraph_1579727304879_-1568683721",
-      "id": "20200122-210824_2103851057",
-      "dateCreated": "2020-01-22 21:08:24.879",
-      "dateStarted": "2020-01-22 21:11:32.680",
-      "dateFinished": "2020-01-22 21:11:33.079",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
-    },
-    {
       "text": "%hive\n",
       "user": "anonymous",
       "dateUpdated": "2020-01-22 21:11:32.668",
@@ -138,10 +99,7 @@
   "id": "2F1ERX5FU",
   "noteParams": {},
   "noteForms": {},
-  "angularObjects": {
-    "spark:shared_process": [],
-    "hive:shared_process": []
-  },
+  "angularObjects": {},
   "config": {
     "isZeppelinNotebookCronEnable": false
   },
