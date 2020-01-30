@@ -31,14 +31,17 @@ the repository.  The file layout should follow this structure for initialisation
     ├── vehicle.csv
     └── weather
 
+Setup the environment::
+
+    $ make init
+
 ***********************************************************************
 ACRTA Case Study Infrastructure Build and Setup - "I'm in a hurry" Mode
 ***********************************************************************
 
 ::
 
-    $ docker-compose up -d
-    $ ./init.sh
+    $ make local-build-up
 
 `Browse to <http://localhost:8080>`_ to see the Zeppelin dashboard
 
@@ -52,7 +55,7 @@ Click on the "Run all paragraphs" icon for the following notebooks in this order
 ACRTA Case Study Infrastructure Build and Setup - Detailed Mode
 ***************************************************************
 
-Using `docker-run`
+Using `docker run`
 ==================
 
 Hive
@@ -92,9 +95,8 @@ Once you are finished::
 
     `docker-compose down` will destroy all data within Hive (the data warehouse will be lost)
 
-*****************************
 ACRTA Hive Init and Data Load
-*****************************
+=============================
 
 .. note::
 
