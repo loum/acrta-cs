@@ -119,10 +119,10 @@ help:
 	@echo "\n \
 	Targets\n\
 	------------------------------------------------------------------------\n \
-	local-build-up:       Create a local Kafka Connect pipeline that streams data to an S3-like store (MINIO).\n \
-	local-build-down:     Destroy local Kafka Connect pipeline.\n \
-	local-build-config:   Local Kafka Connect pipeline docker-compose config.\n \
-	local-rmi:            Remove local Kafka Connect docker image.\n \
+	local-build-up:       Create local Hive/Zeppelin infrastructure and setup.\n \
+	local-build-down:     Destroy local Hive/Zeppelin infrastructure.\n \
+	local-build-config:   Local pipeline docker-compose config.\n \
+	local-rmi:            Remove local Hive docker image.\n \
 	print-<var>:          Display the Makefile global variable '<var>' value.\n \
 	clean:                Remove all files not tracked by Git.\n \
 	";
