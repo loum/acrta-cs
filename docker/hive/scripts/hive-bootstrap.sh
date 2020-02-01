@@ -23,4 +23,4 @@ echo "Done."
 
 # Block Hadoop until we signal exit.
 trap 'exit 0' TERM
-while true; do :; done
+while true; do sleep 0.5; done

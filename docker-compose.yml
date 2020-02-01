@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   hive:
-    image: loum/acrta-hive:latest
+    image: loum/acrta-hive:${HASH}
     build:
       context: ./docker/hive
     container_name: hive
@@ -14,7 +14,7 @@ services:
       - 10000:10000
 
   zeppelin:
-    image: loum/zeppelin-hive:latest
+    image: loum/zeppelin-hive:${HASH}
     build:
       context: docker/zeppelin-hive
     container_name: zeppelin
