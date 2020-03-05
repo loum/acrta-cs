@@ -21,6 +21,14 @@ Get the code and change into the top level `git` project directory::
 
     Run all commands from the top-level directory of the `git` repository.
 
+For first-time setup, get the `Makester project <https://github.com/loum/makester.git>`_::
+
+    $ git submodule update --init
+
+Keep `Makester project <https://github.com/loum/makester.git>`_ up-to-date with::
+
+    $ git submodule update --remote --merge
+
 Manually copy the ACRTA data files under the `data` directory within the project as they are not part of
 the repository.  The file layout should follow this structure for initialisation to succeed::
 
@@ -104,4 +112,4 @@ ACRTA Hive Init and Data Load
 
 To prepare the ACRTA HDFS directories and create the ACRTA Data Warehouse tables::
 
-    $ ./init.sh
+    $ ./hive-init.sh
