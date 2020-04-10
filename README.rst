@@ -8,18 +8,19 @@ Prerequisties
 *************
 
 - `Docker <https://docs.docker.com/install/>`_
+- `GNU make <https://www.gnu.org/software/make/manual/make.html>`_
 
 ***************
 Getting Started
 ***************
 
-Get the code and change into the top level `git` project directory::
+Get the code and change into the top level ``git`` project directory::
 
     $ git clone https://github.com/loum/acrta-cs.git && cd acrta-cs
 
 .. note::
 
-    Run all commands from the top-level directory of the `git` repository.
+    Run all commands from the top-level directory of the ``git`` repository.
 
 For first-time setup, get the `Makester project <https://github.com/loum/makester.git>`_::
 
@@ -29,7 +30,14 @@ Keep `Makester project <https://github.com/loum/makester.git>`_ up-to-date with:
 
     $ git submodule update --remote --merge
 
-Manually copy the ACRTA data files under the `data` directory within the project as they are not part of
+Setup the environment::
+
+    $ make init
+
+Data Files
+==========
+
+Manually copy the ACRTA data files under the ``data`` directory within the project as they are not part of
 the repository.  The file layout should follow this structure for initialisation to succeed::
 
     $ tree -L 1 data
@@ -38,10 +46,6 @@ the repository.  The file layout should follow this structure for initialisation
     ├── trip
     ├── vehicle.csv
     └── weather
-
-Setup the environment::
-
-    $ make init
 
 ***********************************************************************
 ACRTA Case Study Infrastructure Build and Setup - "I'm in a hurry" Mode
@@ -63,8 +67,8 @@ Click on the "Run all paragraphs" icon for the following notebooks in this order
 ACRTA Case Study Infrastructure Build and Setup - Detailed Mode
 ***************************************************************
 
-Using `docker run`
-==================
+Using ``docker run``
+====================
 
 Hive
 ----
@@ -87,21 +91,6 @@ Build the custom Apache Zeppelin notebook with Hive interpreter::
 Run the container::
 
     $ docker run -d -p 8080:8080 --rm -v $PWD/logs:/logs -v $PWD/docker/zeppelin-hive/notebook:/notebook -e ZEPPELIN_LOG_DIR='/logs' -e ZEPPELIN_NOTEBOOK_DIR='/notebook' -e ZEPPELIN_ADDR='0.0.0.0' --name zeppelin loum/zeppelin-hive
-
-Using `docker-compose`
-======================
-
-ACRTA Case Study infrastructure set up can also be achieved with `docker-compose`::
-
-    $ docker-compose up -d
-
-Once you are finished::
-
-    $ docker-compose down
-
-.. note::
-
-    `docker-compose down` will destroy all data within Hive (the data warehouse will be lost)
 
 ACRTA Hive Init and Data Load
 =============================

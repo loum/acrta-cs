@@ -14,19 +14,22 @@ local-build-config:
       $(DOCKER_COMPOSE) \
       config
 
-local-build-up: local-build-down
-	@SERVICE_NAME=$(SERVICE_NAME) \
-      HASH=$(HASH) \
-      $(DOCKER_COMPOSE) \
-      up -d
-	@$(PYTHON) scripts/backoff -p 10000
+backoff:
+	@$(PYTHON) makester/scripts/backoff -d "HiveServer2" -p 10000 localhost
+	@$(PYTHON) makester/scripts/backoff -d "Web UI for HiveServer2" -p 10002 localhost
+
+compose-up:
+	@SERVICE_NAME=$(SERVICE_NAME) HASH=$(HASH) $(DOCKER_COMPOSE) up -d
+
+local-build-up: local-build-down compose-up backoff
 	@./hive-init.sh
 
 local-build-down:
-	@SERVICE_NAME=$(SERVICE_NAME) \
-      HASH=$(HASH) \
-      $(DOCKER_COMPOSE) \
-      down
+	@SERVICE_NAME=$(SERVICE_NAME) HASH=$(HASH) $(DOCKER_COMPOSE) down
+
+beeline: backoff
+	@$(DOCKER) exec -ti hive\
+ bash -c "HADOOP_HOME=/opt/hadoop /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000"
 
 help: base-help python-venv-help
 	@echo "(Makefile)\n\
