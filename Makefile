@@ -25,11 +25,7 @@ local-build-up: local-build-down compose-up backoff
 	@./hive-init.sh
 
 local-build-down:
-	@SERVICE_NAME=$(SERVICE_NAME) HASH=$(HASH) $(DOCKER_COMPOSE) down
-
-beeline: backoff
-	@$(DOCKER) exec -ti hive\
- bash -c "HADOOP_HOME=/opt/hadoop /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000"
+	@SERVICE_NAME=$(SERVICE_NAME) HASH=$(HASH) $(DOCKER_COMPOSE) down -v
 
 help: base-help python-venv-help
 	@echo "(Makefile)\n\
@@ -38,6 +34,5 @@ help: base-help python-venv-help
   local-build-down:    Destroy local Hive/Zeppelin infrastructure\n\
   local-build-config:  Local pipeline docker-compose config\n\
 	";
-
 
 .PHONY: help

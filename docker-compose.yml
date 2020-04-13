@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   hive:
-    image: loum/hadoop-hive:3.2.1-3.1.2-1
+    image: loum/hive-on-spark:3.1.2-2.4.5-1
     container_name: hive
     volumes:
       - ./data:/data
@@ -10,6 +10,11 @@ services:
       - ./scripts:/scripts
     ports:
       - 10000:10000
+      - 10002:10002
+      - 8032:8032
+      - 8088:8088
+      - 8042:8042
+      - 18080:18080
 
   zeppelin:
     image: loum/zeppelin-hive:${HASH}
@@ -17,6 +22,7 @@ services:
       context: docker/zeppelin-hive
     container_name: zeppelin
     environment:
+      ZEPPELIN_PORT: 18888
       ZEPPELIN_LOG_DIR: /logs
       ZEPPELIN_NOTEBOOK_DIR: /notebook
       ZEPPELIN_ADDR: 0.0.0.0
@@ -24,4 +30,4 @@ services:
       - ./docker/zeppelin-hive/notebook:/notebook
       - ./logs:/logs
     ports:
-      - 8080:8080
+      - 18888:18888
