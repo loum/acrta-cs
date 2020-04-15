@@ -2,7 +2,7 @@ include makester/makefiles/base.mk
 include makester/makefiles/python-venv.mk
 include makester/makefiles/compose.mk
 
-init: pip-requirements
+init: makester-requirements
 
 backoff:
 	@$(PYTHON) makester/scripts/backoff -d "Zeppelin web UI" -p 18888 localhost
