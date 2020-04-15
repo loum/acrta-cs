@@ -3,7 +3,7 @@
     {
       "text": "%hive\n-- Every trip’s aggregated features at a trip id level.\n--\nCREATE TABLE IF NOT EXISTS drive_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT deaccel_event_cnt.trip_id AS trip_id,\n    deaccel_event_cnt.ft_count_vehicle_deaccel_val AS ft_count_vehicle_deaccel_val,\n    hard_brake_10_cnt.ft_sum_hard_brakes_10_flg_val AS ft_sum_hard_brakes_10_flg_val,\n    hard_brake_3_cnt.ft_sum_hard_brakes_3_flg_val AS ft_sum_hard_brakes_3_flg_val,\n    sum_deaccel_cnt.ft_sum_time_deaccel_val AS ft_sum_time_deaccel_val,\n    accel_event_cnt.ft_count_vehicle_accel_val AS ft_count_vehicle_accel_val,\n    hard_accel_10_cnt.ft_sum_hard_accel_10_flg_val AS ft_sum_hard_accel_10_flg_val,\n    hard_accel_3_cnt.ft_sum_hard_accel_3_flg_val AS ft_sum_hard_accel_3_flg_val,\n    sum_accel_cnt.ft_sum_time_accel_val AS ft_sum_time_accel_val\nFROM (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c 0\n    ) deaccel_event\n    GROUP BY trip_id\n) deaccel_event_cnt\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -10\n    ) hard_break_10\n    GROUP BY trip_id\n) hard_brake_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10\n    ) hard_break_3\n    GROUP BY trip_id\n) hard_brake_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003c 0\n    ) sum_deaccel\n    GROUP BY trip_id\n) sum_deaccel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_deaccel_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_accel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e 0\n    ) accel_event\n    GROUP BY trip_id\n) accel_event_cnt\nON deaccel_event_cnt.trip_id \u003d accel_event_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 10\n    ) hard_accel_10\n    GROUP BY trip_id\n) hard_accel_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 3 AND MAX(acceleration) \u003c 10\n    ) hard_accel_3\n    GROUP BY trip_id\n) hard_accel_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_accel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003e 0\n    ) sum_accel\n    GROUP BY trip_id\n) sum_accel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_accel_cnt.trip_id\nORDER BY trip_id",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:31:22.746",
+      "dateUpdated": "2020-04-14 22:14:20.417",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -46,12 +46,12 @@
           }
         },
         "editorSetting": {
-          "language": "sql",
+          "language": "text",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/sql"
+        "editorMode": "ace/mode/text"
       },
       "settings": {
         "params": {},
@@ -67,36 +67,41 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579249163721_-2088551377",
       "id": "20200117-081923_746842157",
       "dateCreated": "2020-01-17 08:19:23.721",
-      "dateStarted": "2020-01-22 21:31:22.758",
-      "dateFinished": "2020-01-22 21:37:37.138",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "dateStarted": "2020-04-14 22:14:20.423",
+      "dateFinished": "2020-04-14 22:16:20.918",
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:24:11.969",
+      "dateUpdated": "2020-04-06 00:41:23.769",
       "config": {},
       "settings": {
         "params": {},
         "forms": {}
       },
       "apps": [],
-      "jobName": "paragraph_1579728251969_1668437638",
-      "id": "20200122-212411_1046791920",
-      "dateCreated": "2020-01-22 21:24:11.969",
-      "status": "READY",
-      "progressUpdateIntervalMs": 500
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1586133683768_1567628637",
+      "id": "20200406-004123_117491833",
+      "dateCreated": "2020-04-06 00:41:23.768",
+      "status": "READY"
     }
   ],
   "name": "drive_features",
   "id": "2F14V6ZDZ",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
-  "angularObjects": {},
+  "angularObjects": {
+    "spark:shared_process": [],
+    "hive:shared_process": []
+  },
   "config": {
     "isZeppelinNotebookCronEnable": false
   },

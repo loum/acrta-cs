@@ -5,6 +5,7 @@ include makester/makefiles/compose.mk
 init: pip-requirements
 
 backoff:
+	@$(PYTHON) makester/scripts/backoff -d "Zeppelin web UI" -p 18888 localhost
 	@$(PYTHON) makester/scripts/backoff -d "HiveServer2" -p 10000 localhost
 	@$(PYTHON) makester/scripts/backoff -d "Web UI for HiveServer2" -p 10002 localhost
 

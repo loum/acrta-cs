@@ -3,19 +3,19 @@
     {
       "text": "%hive\n-- Create the \"drive_temp\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS drive_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 20:18:10.691",
+      "dateUpdated": "2020-04-15 01:03:58.705",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
         "enabled": true,
         "results": {},
         "editorSetting": {
-          "language": "sql",
+          "language": "text",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/sql"
+        "editorMode": "ace/mode/text"
       },
       "settings": {
         "params": {},
@@ -31,30 +31,30 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579394072314_1180159791",
       "id": "20200119-003432_1731334026",
       "dateCreated": "2020-01-19 00:34:32.314",
-      "dateStarted": "2020-01-22 20:18:10.758",
-      "dateFinished": "2020-01-22 20:21:13.549",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "dateStarted": "2020-04-15 01:03:58.727",
+      "dateFinished": "2020-04-15 01:05:37.933",
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Create the \"engine_temp\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS engine_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    week_start_date,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252) ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower) ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm) ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS week_start_date,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0 THEN vehicle.make ELSE \"undefined\" END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0 THEN vehicle.max_torque ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1",
       "user": "anonymous",
-      "dateUpdated": "2020-01-22 21:25:09.950",
+      "dateUpdated": "2020-04-15 01:05:42.683",
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
         "enabled": true,
         "results": {},
         "editorSetting": {
-          "language": "sql",
+          "language": "text",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/sql"
+        "editorMode": "ace/mode/text"
       },
       "settings": {
         "params": {},
@@ -70,13 +70,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579522541215_660352929",
       "id": "20200120-121541_636784344",
       "dateCreated": "2020-01-20 12:15:41.215",
-      "dateStarted": "2020-01-22 20:21:19.943",
-      "dateFinished": "2020-01-22 20:29:37.508",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "dateStarted": "2020-04-14 14:29:17.339",
+      "dateFinished": "2020-04-14 14:37:11.688",
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n",
@@ -88,18 +88,22 @@
         "forms": {}
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579739690689_1975482392",
       "id": "20200123-003450_705134689",
       "dateCreated": "2020-01-23 00:34:50.689",
-      "status": "READY",
-      "progressUpdateIntervalMs": 500
+      "status": "READY"
     }
   ],
   "name": "acrta-dwh",
   "id": "2EYJZ3KQW",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
-  "angularObjects": {},
+  "angularObjects": {
+    "hive:shared_process": []
+  },
   "config": {
     "isZeppelinNotebookCronEnable": false
   },

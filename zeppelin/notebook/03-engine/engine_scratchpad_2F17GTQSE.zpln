@@ -74,13 +74,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579521692146_290674933",
       "id": "20200120-120132_294582333",
       "dateCreated": "2020-01-20 12:01:32.146",
       "dateStarted": "2020-01-20 12:01:46.508",
       "dateFinished": "2020-01-20 12:01:46.596",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\nDESC drive",
@@ -143,13 +143,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579522266467_349512566",
       "id": "20200120-121106_1728666124",
       "dateCreated": "2020-01-20 12:11:06.467",
       "dateStarted": "2020-01-20 12:13:05.522",
       "dateFinished": "2020-01-20 12:13:05.580",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\nSELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    timestamp_pst_start_of_week,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252) ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower) ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm) ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS timestamp_pst_start_of_week,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0 THEN vehicle.make ELSE \"undefined\" END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0 THEN vehicle.max_torque ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1\nWHERE t1.vehicle_id \u003d 1000507 LIMIT 1\nAND drive.trip_id \u003d \"152af94305154e5681323461de8e4ce6\"",
@@ -351,13 +351,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579522385511_205705029",
       "id": "20200120-121305_1148909728",
       "dateCreated": "2020-01-20 12:13:05.511",
       "dateStarted": "2020-01-22 08:46:42.140",
       "dateFinished": "2020-01-22 08:51:46.874",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\nSELECT * FROM engine_temp\nWHERE torque_utilization \u003e\u003d 0.6\nAND torque_utilization \u003c 0.7",
@@ -429,13 +429,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579522856681_941155388",
       "id": "20200120-122056_1547311725",
       "dateCreated": "2020-01-20 12:20:56.681",
       "dateStarted": "2020-01-20 12:53:49.143",
       "dateFinished": "2020-01-20 12:53:49.267",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- total time take in seconds for horsepower to be utilized \u003e\u003d 50 and \u003c 60\nSELECT * FROM engine_temp\nWHERE horsepower_utilization \u003e\u003d 0.5\nAND horsepower_utilization \u003c 0.6",
@@ -650,13 +650,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579524684853_-2112528329",
       "id": "20200120-125124_295263495",
       "dateCreated": "2020-01-20 12:51:24.853",
       "dateStarted": "2020-01-21 06:23:51.308",
       "dateFinished": "2020-01-21 06:23:51.454",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- total time take in seconds for rpm to be utilized \u003e\u003d 50 and \u003c 60\nSELECT * FROM engine_temp\nWHERE rpm_utilization \u003e\u003d 0.5\nAND rpm_utilization \u003c 0.6",
@@ -723,13 +723,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579585880562_-1348782033",
       "id": "20200121-055120_215161925",
       "dateCreated": "2020-01-21 05:51:20.562",
       "dateStarted": "2020-01-21 07:44:04.779",
       "dateFinished": "2020-01-21 07:44:04.887",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n",
@@ -741,15 +741,16 @@
         "forms": {}
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579676443848_-375954746",
       "id": "20200122-070043_1867156562",
       "dateCreated": "2020-01-22 07:00:43.848",
-      "status": "READY",
-      "progressUpdateIntervalMs": 500
+      "status": "READY"
     }
   ],
   "name": "engine_scratchpad",
   "id": "2F17GTQSE",
+  "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {

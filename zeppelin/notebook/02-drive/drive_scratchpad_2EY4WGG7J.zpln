@@ -62,13 +62,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579482869163_1600407271",
       "id": "20200116-073520_481206889",
       "dateCreated": "2020-01-20 01:14:29.164",
       "dateStarted": "2020-01-20 11:34:00.288",
       "dateFinished": "2020-01-20 11:34:00.342",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\nDESC drive",
@@ -131,13 +131,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579521985948_2125620841",
       "id": "20200120-120625_943137523",
       "dateCreated": "2020-01-20 12:06:25.948",
       "dateStarted": "2020-01-20 12:06:31.914",
       "dateFinished": "2020-01-20 12:06:31.962",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Sample dump of \"drive_temp\" table for diagnostics.\nSELECT * FROM\ndrive_temp\nWHERE vehicle_id \u003d 1000500\nAND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\nORDER BY datetime LIMIT 500",
@@ -277,13 +277,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579482869172_1157880447",
       "id": "20200116-104937_1931135554",
       "dateCreated": "2020-01-20 01:14:29.172",
       "dateStarted": "2020-01-20 03:29:10.359",
       "dateFinished": "2020-01-20 03:30:47.714",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Deacceleration event.\n--\n-- Continuous deacceleration (continuous negative delta velocity over a sequence of seconds) is treated as a single deacceleration event.\nSELECT vehicle_id, trip_id, acceleration_group, MIN(acceleration) AS min_acceleration FROM drive_temp\nWHERE vehicle_id \u003d 1000500 AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\nGROUP BY vehicle_id, trip_id, acceleration_group\nHAVING min_acceleration \u003c 0\n",
@@ -347,13 +347,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579482869175_-1562454358",
       "id": "20200118-024041_874744733",
       "dateCreated": "2020-01-20 01:14:29.175",
       "dateStarted": "2020-01-20 01:45:47.981",
       "dateFinished": "2020-01-20 01:46:19.971",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Hard brakes 10 event.\n--\n-- Total number of times when hard brakes were applied.\n-- Defined as event that exhibits minimum decceleration of less than or equal to -10 m/s\n-- Mutliple items that are less than or equal to -10 m/s in a single dececeleration event are counted only once.\nSELECT vehicle_id, trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\nFROM drive_temp\nWHERE vehicle_id \u003d 1000500 AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\nGROUP BY vehicle_id, trip_id, acceleration_group\nHAVING MIN(acceleration) \u003c\u003d -10",
@@ -417,13 +417,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579490354104_-1653385806",
       "id": "20200120-031914_806676755",
       "dateCreated": "2020-01-20 03:19:14.111",
       "dateStarted": "2020-01-20 03:25:24.516",
       "dateFinished": "2020-01-20 03:27:04.614",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Hard brakes 3 event.\n--\n-- Total number of times when hard brakes were applied.\n-- Defined as event that exhibits minimum decceleration of greater than -10 m/s\n-- and less than or equal to -3 m/s.\nSELECT vehicle_id, trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\nFROM drive_temp\nWHERE vehicle_id \u003d 1000500 AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\nGROUP BY vehicle_id, trip_id, acceleration_group\nHAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10",
@@ -487,13 +487,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579491188428_2114495703",
       "id": "20200120-033308_1561918290",
       "dateCreated": "2020-01-20 03:33:08.432",
       "dateStarted": "2020-01-20 03:40:11.377",
       "dateFinished": "2020-01-20 03:41:53.012",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n-- Sum total time in deacceleration.\nSELECT vehicle_id, trip_id, acceleration, acceleration_group\nFROM drive_temp\nWHERE vehicle_id \u003d 1000500 AND trip_id \u003d \"152af94305154e5681323461de8e4ce6\"\nAND acceleration \u003c 0",
@@ -557,13 +557,13 @@
         ]
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579491678654_537423230",
       "id": "20200120-034118_1310037465",
       "dateCreated": "2020-01-20 03:41:18.658",
       "dateStarted": "2020-01-20 03:45:51.484",
       "dateFinished": "2020-01-20 03:45:58.594",
-      "status": "FINISHED",
-      "progressUpdateIntervalMs": 500
+      "status": "FINISHED"
     },
     {
       "text": "%hive\n",
@@ -575,16 +575,17 @@
         "forms": {}
       },
       "apps": [],
+      "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579482869180_1216781885",
       "id": "20200119-171335_1174163075",
       "dateCreated": "2020-01-20 01:14:29.180",
       "status": "READY",
-      "errorMessage": "",
-      "progressUpdateIntervalMs": 500
+      "errorMessage": ""
     }
   ],
   "name": "drive_scratchpad",
   "id": "2EY4WGG7J",
+  "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {
