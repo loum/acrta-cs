@@ -59,9 +59,9 @@ ACRTA Case Study Infrastructure Build and Setup - "I'm in a hurry" Mode
 
 Click on the "Run all paragraphs" icon for the following notebooks in this order::
 
-# ``acrta_dwh``
-# ``drive_features``
-# ``engine_features``
+# ``01-init|acrta_dwh``
+# ``02-drive|drive_features``
+# ``03-engine|engine_features``
 
 ***************************************************************
 ACRTA Case Study Infrastructure Build and Setup - Detailed Mode
