@@ -1,9 +1,244 @@
 {
   "paragraphs": [
     {
-      "text": "%hive\n-- Every trip’s aggregated features at a trip id level.\n--\nCREATE TABLE IF NOT EXISTS drive_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT deaccel_event_cnt.trip_id AS trip_id,\n    deaccel_event_cnt.ft_count_vehicle_deaccel_val AS ft_count_vehicle_deaccel_val,\n    hard_brake_10_cnt.ft_sum_hard_brakes_10_flg_val AS ft_sum_hard_brakes_10_flg_val,\n    hard_brake_3_cnt.ft_sum_hard_brakes_3_flg_val AS ft_sum_hard_brakes_3_flg_val,\n    sum_deaccel_cnt.ft_sum_time_deaccel_val AS ft_sum_time_deaccel_val,\n    accel_event_cnt.ft_count_vehicle_accel_val AS ft_count_vehicle_accel_val,\n    hard_accel_10_cnt.ft_sum_hard_accel_10_flg_val AS ft_sum_hard_accel_10_flg_val,\n    hard_accel_3_cnt.ft_sum_hard_accel_3_flg_val AS ft_sum_hard_accel_3_flg_val,\n    sum_accel_cnt.ft_sum_time_accel_val AS ft_sum_time_accel_val\nFROM (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c 0\n    ) deaccel_event\n    GROUP BY trip_id\n) deaccel_event_cnt\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -10\n    ) hard_break_10\n    GROUP BY trip_id\n) hard_brake_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10\n    ) hard_break_3\n    GROUP BY trip_id\n) hard_brake_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003c 0\n    ) sum_deaccel\n    GROUP BY trip_id\n) sum_deaccel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_deaccel_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_accel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e 0\n    ) accel_event\n    GROUP BY trip_id\n) accel_event_cnt\nON deaccel_event_cnt.trip_id \u003d accel_event_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 10\n    ) hard_accel_10\n    GROUP BY trip_id\n) hard_accel_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 3 AND MAX(acceleration) \u003c 10\n    ) hard_accel_3\n    GROUP BY trip_id\n) hard_accel_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_accel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003e 0\n    ) sum_accel\n    GROUP BY trip_id\n) sum_accel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_accel_cnt.trip_id\nORDER BY trip_id",
+      "title": "Aggregated drive_features",
+      "text": "%md\n# Every Trip’s Aggregated Features at a ``trip_id`` Level\n\nExtends the ``drive_temp`` table with targeted trip information to build the ``drive_features`` table.\n\nRunning the queries in this Notebook defined by the following paragraph headings:\n\n1. ``drive_features`` Builder Query\n",
       "user": "anonymous",
-      "dateUpdated": "2020-04-14 22:14:20.417",
+      "dateUpdated": "2021-06-17 00:03:47.172",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": true,
+        "results": {},
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch1\u003eEvery Trip’s Aggregated Features at a \u003ccode\u003etrip_id\u003c/code\u003e Level\u003c/h1\u003e\n\u003cp\u003eExtends the \u003ccode\u003edrive_temp\u003c/code\u003e table with targeted trip information to build the \u003ccode\u003edrive_features\u003c/code\u003e table.\u003c/p\u003e\n\u003cp\u003eRunning the queries in this Notebook defined by the following paragraph headings:\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e\u003ccode\u003edrive_features\u003c/code\u003e Builder Query\u003c/li\u003e\n\u003c/ol\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1622952475029_718719323",
+      "id": "paragraph_1622952475029_718719323",
+      "dateCreated": "2021-06-06 04:07:55.029",
+      "dateStarted": "2021-06-06 04:14:47.721",
+      "dateFinished": "2021-06-06 04:14:47.734",
+      "status": "FINISHED"
+    },
+    {
+      "title": "1. drive_features Builder Query",
+      "text": "%hive\nCREATE TABLE IF NOT EXISTS drive_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT deaccel_event_cnt.trip_id AS trip_id,\n    deaccel_event_cnt.ft_count_vehicle_deaccel_val AS ft_count_vehicle_deaccel_val,\n    hard_brake_10_cnt.ft_sum_hard_brakes_10_flg_val AS ft_sum_hard_brakes_10_flg_val,\n    hard_brake_3_cnt.ft_sum_hard_brakes_3_flg_val AS ft_sum_hard_brakes_3_flg_val,\n    sum_deaccel_cnt.ft_sum_time_deaccel_val AS ft_sum_time_deaccel_val,\n    accel_event_cnt.ft_count_vehicle_accel_val AS ft_count_vehicle_accel_val,\n    hard_accel_10_cnt.ft_sum_hard_accel_10_flg_val AS ft_sum_hard_accel_10_flg_val,\n    hard_accel_3_cnt.ft_sum_hard_accel_3_flg_val AS ft_sum_hard_accel_3_flg_val,\n    sum_accel_cnt.ft_sum_time_accel_val AS ft_sum_time_accel_val\nFROM (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c 0\n    ) deaccel_event\n    GROUP BY trip_id\n) deaccel_event_cnt\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -10\n    ) hard_break_10\n    GROUP BY trip_id\n) hard_brake_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10\n    ) hard_break_3\n    GROUP BY trip_id\n) hard_brake_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003c 0\n    ) sum_deaccel\n    GROUP BY trip_id\n) sum_deaccel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_deaccel_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_accel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e 0\n    ) accel_event\n    GROUP BY trip_id\n) accel_event_cnt\nON deaccel_event_cnt.trip_id \u003d accel_event_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 10\n    ) hard_accel_10\n    GROUP BY trip_id\n) hard_accel_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 3 AND MAX(acceleration) \u003c 10\n    ) hard_accel_3\n    GROUP BY trip_id\n) hard_accel_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_accel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003e 0\n    ) sum_accel\n    GROUP BY trip_id\n) sum_accel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_accel_cnt.trip_id\nORDER BY trip_id",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:41:46.743",
+      "progress": 0,
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 10.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "trip_id": "string",
+                      "ft_count_vehicle_deaccel_val": "string",
+                      "ft_sum_hard_brakes_10_flg_val": "string",
+                      "ft_sum_hard_brakes_3_flg_val": "string",
+                      "ft_sum_time_deaccel_val": "string",
+                      "ft_count_vehicle_accel_val": "string",
+                      "ft_sum_hard_accel_10_flg_val": "string",
+                      "ft_sum_hard_accel_3_flg_val": "string",
+                      "ft_sum_time_accel_val": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "title": true,
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "INFO  : Compiling command(queryId\u003dhdfs_20210616234126_c76042b2-5814-4f36-aed2-49e154692475): \nCREATE TABLE IF NOT EXISTS drive_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT deaccel_event_cnt.trip_id AS trip_id,\n    deaccel_event_cnt.ft_count_vehicle_deaccel_val AS ft_count_vehicle_deaccel_val,\n    hard_brake_10_cnt.ft_sum_hard_brakes_10_flg_val AS ft_sum_hard_brakes_10_flg_val,\n    hard_brake_3_cnt.ft_sum_hard_brakes_3_flg_val AS ft_sum_hard_brakes_3_flg_val,\n    sum_deaccel_cnt.ft_sum_time_deaccel_val AS ft_sum_time_deaccel_val,\n    accel_event_cnt.ft_count_vehicle_accel_val AS ft_count_vehicle_accel_val,\n    hard_accel_10_cnt.ft_sum_hard_accel_10_flg_val AS ft_sum_hard_accel_10_flg_val,\n    hard_accel_3_cnt.ft_sum_hard_accel_3_flg_val AS ft_sum_hard_accel_3_flg_val,\n    sum_accel_cnt.ft_sum_time_accel_val AS ft_sum_time_accel_val\nFROM (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c 0\n    ) deaccel_event\n    GROUP BY trip_id\n) deaccel_event_cnt\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -10\n    ) hard_break_10\n    GROUP BY trip_id\n) hard_brake_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10\n    ) hard_break_3\n    GROUP BY trip_id\n) hard_brake_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003c 0\n    ) sum_deaccel\n    GROUP BY trip_id\n) sum_deaccel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_deaccel_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_accel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e 0\n    ) accel_event\n    GROUP BY trip_id\n) accel_event_cnt\nON deaccel_event_cnt.trip_id \u003d accel_event_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 10\n    ) hard_accel_10\n    GROUP BY trip_id\n) hard_accel_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 3 AND MAX(acceleration) \u003c 10\n    ) hard_accel_3\n    GROUP BY trip_id\n) hard_accel_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_accel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003e 0\n    ) sum_accel\n    GROUP BY trip_id\n) sum_accel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_accel_cnt.trip_id\nORDER BY trip_id\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : No Stats for default@drive_temp, Columns: acceleration, trip_id, acceleration_group\nINFO  : Semantic Analysis Completed (retrial \u003d false)\nINFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:trip_id, type:string, comment:null), FieldSchema(name:ft_count_vehicle_deaccel_val, type:bigint, comment:null), FieldSchema(name:ft_sum_hard_brakes_10_flg_val, type:bigint, comment:null), FieldSchema(name:ft_sum_hard_brakes_3_flg_val, type:bigint, comment:null), FieldSchema(name:ft_sum_time_deaccel_val, type:bigint, comment:null), FieldSchema(name:ft_count_vehicle_accel_val, type:bigint, comment:null), FieldSchema(name:ft_sum_hard_accel_10_flg_val, type:bigint, comment:null), FieldSchema(name:ft_sum_hard_accel_3_flg_val, type:bigint, comment:null), FieldSchema(name:ft_sum_time_accel_val, type:bigint, comment:null)], properties:null)\nINFO  : Completed compiling command(queryId\u003dhdfs_20210616234126_c76042b2-5814-4f36-aed2-49e154692475); Time taken: 0.541 seconds\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : Executing command(queryId\u003dhdfs_20210616234126_c76042b2-5814-4f36-aed2-49e154692475): \nCREATE TABLE IF NOT EXISTS drive_features\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_features\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT deaccel_event_cnt.trip_id AS trip_id,\n    deaccel_event_cnt.ft_count_vehicle_deaccel_val AS ft_count_vehicle_deaccel_val,\n    hard_brake_10_cnt.ft_sum_hard_brakes_10_flg_val AS ft_sum_hard_brakes_10_flg_val,\n    hard_brake_3_cnt.ft_sum_hard_brakes_3_flg_val AS ft_sum_hard_brakes_3_flg_val,\n    sum_deaccel_cnt.ft_sum_time_deaccel_val AS ft_sum_time_deaccel_val,\n    accel_event_cnt.ft_count_vehicle_accel_val AS ft_count_vehicle_accel_val,\n    hard_accel_10_cnt.ft_sum_hard_accel_10_flg_val AS ft_sum_hard_accel_10_flg_val,\n    hard_accel_3_cnt.ft_sum_hard_accel_3_flg_val AS ft_sum_hard_accel_3_flg_val,\n    sum_accel_cnt.ft_sum_time_accel_val AS ft_sum_time_accel_val\nFROM (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c 0\n    ) deaccel_event\n    GROUP BY trip_id\n) deaccel_event_cnt\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -10\n    ) hard_break_10\n    GROUP BY trip_id\n) hard_brake_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_brakes_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MIN(acceleration) \u003c\u003d -3 AND MIN(acceleration) \u003e -10\n    ) hard_break_3\n    GROUP BY trip_id\n) hard_brake_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_brake_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_deaccel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003c 0\n    ) sum_deaccel\n    GROUP BY trip_id\n) sum_deaccel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_deaccel_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_count_vehicle_accel_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e 0\n    ) accel_event\n    GROUP BY trip_id\n) accel_event_cnt\nON deaccel_event_cnt.trip_id \u003d accel_event_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_10_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 10\n    ) hard_accel_10\n    GROUP BY trip_id\n) hard_accel_10_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_10_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_hard_accel_3_flg_val\n    FROM (\n        SELECT trip_id, acceleration_group, MIN(acceleration) AS min_acceleration\n        FROM drive_temp\n        GROUP BY trip_id, acceleration_group\n        HAVING MAX(acceleration) \u003e\u003d 3 AND MAX(acceleration) \u003c 10\n    ) hard_accel_3\n    GROUP BY trip_id\n) hard_accel_3_cnt\nON deaccel_event_cnt.trip_id \u003d hard_accel_3_cnt.trip_id\nLEFT OUTER JOIN (\n    SELECT trip_id, COUNT(*) AS ft_sum_time_accel_val\n    FROM (\n        SELECT trip_id, acceleration, acceleration_group\n        FROM drive_temp\n        WHERE acceleration \u003e 0\n    ) sum_accel\n    GROUP BY trip_id\n) sum_accel_cnt\nON deaccel_event_cnt.trip_id \u003d sum_accel_cnt.trip_id\nORDER BY trip_id\nINFO  : Query ID \u003d hdfs_20210616234126_c76042b2-5814-4f36-aed2-49e154692475\nINFO  : Total jobs \u003d 1\nINFO  : Launching Job 1 out of 1\nINFO  : Starting task [Stage-1:MAPRED] in parallel\nINFO  : Starting task [Stage-0:MOVE] in parallel\nINFO  : Starting task [Stage-3:DDL] in serial mode\nINFO  : Starting task [Stage-2:STATS] in parallel\n\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1\nINFO  : Completed executing command(queryId\u003dhdfs_20210616234126_c76042b2-5814-4f36-aed2-49e154692475); Time taken: 166.045 seconds\nINFO  : OK\nINFO  : Concurrency mode is disabled, not creating a lock manager\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1579249163721_-2088551377",
+      "id": "20200117-081923_746842157",
+      "dateCreated": "2020-01-17 08:19:23.721",
+      "dateStarted": "2021-06-16 23:41:26.730",
+      "dateFinished": "2021-06-16 23:44:13.353",
+      "status": "FINISHED"
+    },
+    {
+      "title": "drive_features Validator",
+      "text": "%hive\nSELECT COUNT(*) FROM drive_features;\nDESCRIBE drive_features",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:50:34.673",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 84.0278,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "_c0": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "col_name": "string",
+                      "data_type": "string",
+                      "comment": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "_c0\n1707\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "col_name\tdata_type\tcomment\ntrip_id\tstring\t\nft_count_vehicle_deaccel_val\tbigint\t\nft_sum_hard_brakes_10_flg_val\tbigint\t\nft_sum_hard_brakes_3_flg_val\tbigint\t\nft_sum_time_deaccel_val\tbigint\t\nft_count_vehicle_accel_val\tbigint\t\nft_sum_hard_accel_10_flg_val\tbigint\t\nft_sum_hard_accel_3_flg_val\tbigint\t\nft_sum_time_accel_val\tbigint\t\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1622952938855_898365792",
+      "id": "paragraph_1622952938855_898365792",
+      "dateCreated": "2021-06-06 04:15:38.855",
+      "dateStarted": "2021-06-16 23:50:34.678",
+      "dateFinished": "2021-06-16 23:50:34.840",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%hive\nSELECT * FROM drive_features\nLIMIT 10;",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:50:53.792",
+      "progress": 0,
       "config": {
         "colWidth": 12.0,
         "fontSize": 9.0,
@@ -46,12 +281,12 @@
           }
         },
         "editorSetting": {
-          "language": "text",
+          "language": "sql",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/text"
+        "editorMode": "ace/mode/sql"
       },
       "settings": {
         "params": {},
@@ -61,35 +296,56 @@
         "code": "SUCCESS",
         "msg": [
           {
-            "type": "TEXT",
-            "data": "Query executed successfully. Affected rows : -1"
+            "type": "TABLE",
+            "data": "trip_id\tft_count_vehicle_deaccel_val\tft_sum_hard_brakes_10_flg_val\tft_sum_hard_brakes_3_flg_val\tft_sum_time_deaccel_val\tft_count_vehicle_accel_val\tft_sum_hard_accel_10_flg_val\tft_sum_hard_accel_3_flg_val\tft_sum_time_accel_val\n00922df3be5a4589ab385d0c2da2dd81\t976\t600\t297\t1414\t974\t563\t329\t1482\n00dc31fe55e24d14989c89de4b3b683b\t1217\t929\t234\t1853\t1217\t923\t229\t1835\n0156d21e316d4d8b9d5bf6ccff797bf7\t1134\t277\t666\t1746\t1135\t289\t673\t1686\n01b8a24510cd4e4684d67b96369286e0\t210\t162\t41\t312\t210\t160\t41\t317\n01c2a70c25e5428bb33811ca5eb19270\t2375\t820\t1269\t3518\t2374\t820\t1277\t3613\n01d4a4efe7d14d11a5f9fa5f40bd8bc3\t1029\t555\t404\t1580\t1028\t589\t363\t1529\n0244f7bc747b41fba6fcd75444736621\t185\t122\t49\t278\t185\t122\t58\t269\n025e2f194863461d9c27b2242007ac09\t1961\t1567\t312\t2953\t1961\t1571\t314\t2925\n02abe724b7a943cdae50c69e4f03cc26\t3186\t2085\t910\t4782\t3186\t2080\t914\t4764\n02c51e56cc484711b218d3d01196687a\t1976\t1089\t736\t2953\t1974\t1073\t742\t2948\n"
           }
         ]
       },
       "apps": [],
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1579249163721_-2088551377",
-      "id": "20200117-081923_746842157",
-      "dateCreated": "2020-01-17 08:19:23.721",
-      "dateStarted": "2020-04-14 22:14:20.423",
-      "dateFinished": "2020-04-14 22:16:20.918",
+      "jobName": "paragraph_1586133683768_1567628637",
+      "id": "20200406-004123_117491833",
+      "dateCreated": "2020-04-06 00:41:23.768",
+      "dateStarted": "2021-06-16 23:50:53.796",
+      "dateFinished": "2021-06-16 23:50:54.376",
       "status": "FINISHED"
     },
     {
       "text": "%hive\n",
       "user": "anonymous",
-      "dateUpdated": "2020-04-06 00:41:23.769",
-      "config": {},
+      "dateUpdated": "2021-06-06 04:20:46.267",
+      "progress": 0,
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
+      },
       "settings": {
         "params": {},
         "forms": {}
       },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
       "apps": [],
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1586133683768_1567628637",
-      "id": "20200406-004123_117491833",
-      "dateCreated": "2020-04-06 00:41:23.768",
-      "status": "READY"
+      "jobName": "paragraph_1622870654395_1733167143",
+      "id": "paragraph_1622870654395_1733167143",
+      "dateCreated": "2021-06-05 05:24:14.395",
+      "dateStarted": "2021-06-06 04:20:46.270",
+      "dateFinished": "2021-06-06 04:20:46.275",
+      "status": "FINISHED"
     }
   ],
   "name": "drive_features",
@@ -98,10 +354,7 @@
   "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
-  "angularObjects": {
-    "spark:shared_process": [],
-    "hive:shared_process": []
-  },
+  "angularObjects": {},
   "config": {
     "isZeppelinNotebookCronEnable": false
   },

@@ -1,21 +1,79 @@
 {
   "paragraphs": [
     {
-      "text": "%hive\n-- Create the \"drive_temp\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS drive_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2",
+      "title": "",
+      "text": "%md\n# Data Primer\n\nFirst, we take the raw data from the ACRTA source and perform some preliminary analytics in preparation for targeted querying later on.\n\nData priming can be achieved by running the queries in this Notebook defined by the following paragraph headings:\n\n1. ``drive_temp`` Builder Query\n2. ``engine_temp`` Builder Query\n",
       "user": "anonymous",
-      "dateUpdated": "2020-04-15 01:03:58.705",
+      "dateUpdated": "2021-06-16 23:29:37.968",
+      "progress": 0,
       "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
         "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": false,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 253.872,
+              "optionOpen": false
+            }
+          }
+        },
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch1\u003eData Primer\u003c/h1\u003e\n\u003cp\u003eFirst, we take the raw data from the ACRTA source and perform some preliminary analytics in preparation for targeted querying later on.\u003c/p\u003e\n\u003cp\u003eData priming can be achieved by running the queries in this Notebook defined by the following paragraph headings:\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e\u003ccode\u003edrive_temp\u003c/code\u003e Builder Query\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003eengine_temp\u003c/code\u003e Builder Query\u003c/li\u003e\n\u003c/ol\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1622942722140_271304870",
+      "id": "paragraph_1622942722140_271304870",
+      "dateCreated": "2021-06-06 01:25:22.141",
+      "dateStarted": "2021-06-06 13:47:32.420",
+      "dateFinished": "2021-06-06 13:47:34.676",
+      "status": "FINISHED"
+    },
+    {
+      "title": "1. drive_temp Builder Query",
+      "text": "%hive\n\nCREATE TABLE IF NOT EXISTS drive_temp\n    STORED AS PARQUET\n    LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027\n    TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:14:47.035",
+      "progress": 0,
+      "config": {
+        "colWidth": 6.0,
         "fontSize": 9.0,
         "enabled": true,
         "results": {},
         "editorSetting": {
-          "language": "text",
+          "language": "sql",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/text"
+        "editorMode": "ace/mode/sql",
+        "tableHide": false,
+        "editorHide": true,
+        "title": true
       },
       "settings": {
         "params": {},
@@ -26,35 +84,225 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "Query executed successfully. Affected rows : -1"
+            "data": "INFO  : Compiling command(queryId\u003dhdfs_20210616231448_bcbad77d-e4dd-46dd-a96f-4b45ab820b85): \n\nCREATE TABLE IF NOT EXISTS drive_temp\n    STORED AS PARQUET\n    LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027\n    TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : Semantic Analysis Completed (retrial \u003d false)\nINFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:vehicle_id, type:bigint, comment:null), FieldSchema(name:trip_id, type:string, comment:null), FieldSchema(name:datetime, type:bigint, comment:null), FieldSchema(name:previous_velocity, type:double, comment:null), FieldSchema(name:velocity, type:double, comment:null), FieldSchema(name:acceleration, type:double, comment:null), FieldSchema(name:acceleration_group, type:bigint, comment:null)], properties:null)\nINFO  : Completed compiling command(queryId\u003dhdfs_20210616231448_bcbad77d-e4dd-46dd-a96f-4b45ab820b85); Time taken: 19.156 seconds\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : Executing command(queryId\u003dhdfs_20210616231448_bcbad77d-e4dd-46dd-a96f-4b45ab820b85): \n\nCREATE TABLE IF NOT EXISTS drive_temp\n    STORED AS PARQUET\n    LOCATION \u0027hdfs:///user/hive/warehouse/drive_temp\u0027\n    TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    previous_velocity,\n    velocity,\n    acceleration,\n    SUM(group_start) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS acceleration_group\nFROM (\n    SELECT vehicle_id,\n        trip_id,\n        datetime,\n        previous_velocity,\n        velocity,\n        acceleration,\n        CASE WHEN SIGN(acceleration) !\u003d SIGN(LAG(acceleration, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AND t1.acceleration !\u003d 0 THEN 1 ELSE 0 END AS group_start\n    FROM (\n        SELECT vehicle_id,\n            trip_id,\n            datetime,\n            LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime) AS previous_velocity,\n            velocity,\n            (velocity - LAG(velocity, 1, 0) OVER (PARTITION BY vehicle_id, trip_id ORDER BY datetime)) AS acceleration\n        FROM drive\n    ) t1\n) t2\nINFO  : Query ID \u003d hdfs_20210616231448_bcbad77d-e4dd-46dd-a96f-4b45ab820b85\nINFO  : Total jobs \u003d 1\nINFO  : Launching Job 1 out of 1\nINFO  : Starting task [Stage-1:MAPRED] in parallel\nINFO  : Starting task [Stage-0:MOVE] in parallel\n\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1\nINFO  : Starting task [Stage-3:DDL] in serial mode\nINFO  : Starting task [Stage-2:STATS] in parallel\nINFO  : Completed executing command(queryId\u003dhdfs_20210616231448_bcbad77d-e4dd-46dd-a96f-4b45ab820b85); Time taken: 80.076 seconds\nINFO  : OK\nINFO  : Concurrency mode is disabled, not creating a lock manager\n"
           }
         ]
       },
       "apps": [],
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579394072314_1180159791",
       "id": "20200119-003432_1731334026",
       "dateCreated": "2020-01-19 00:34:32.314",
-      "dateStarted": "2020-04-15 01:03:58.727",
-      "dateFinished": "2020-04-15 01:05:37.933",
+      "dateStarted": "2021-06-16 23:14:47.060",
+      "dateFinished": "2021-06-16 23:16:27.452",
       "status": "FINISHED"
     },
     {
-      "text": "%hive\n-- Create the \"engine_temp\" working space in prepration for features.\nCREATE TABLE IF NOT EXISTS engine_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    week_start_date,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252) ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower) ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm) ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS week_start_date,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0 THEN vehicle.make ELSE \"undefined\" END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0 THEN vehicle.max_torque ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1",
+      "title": "drive_temp Validator",
+      "text": "%hive\nSELECT COUNT(*) FROM drive_temp AS drive_temp_row_count;\nDESCRIBE drive_temp",
       "user": "anonymous",
-      "dateUpdated": "2020-04-15 01:05:42.683",
+      "dateUpdated": "2021-06-16 23:28:40.468",
+      "progress": 0,
       "config": {
-        "colWidth": 12.0,
-        "fontSize": 9.0,
-        "enabled": true,
-        "results": {},
+        "tableHide": false,
         "editorSetting": {
-          "language": "text",
+          "language": "sql",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/text"
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 144.028,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "_c0": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 232.083,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {
+                    "columns": [
+                      {
+                        "name": "col_name0",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      },
+                      {
+                        "name": "data_type1",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      },
+                      {
+                        "name": "comment2",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      }
+                    ],
+                    "scrollFocus": {},
+                    "selection": [],
+                    "grouping": {
+                      "grouping": [],
+                      "aggregations": [],
+                      "rowExpandedStates": {}
+                    },
+                    "treeView": {},
+                    "pagination": {
+                      "paginationCurrentPage": 1.0,
+                      "paginationPageSize": 250.0
+                    }
+                  },
+                  "tableColumnTypeState": {
+                    "updated": false,
+                    "names": {
+                      "col_name": "string",
+                      "data_type": "string",
+                      "comment": "string"
+                    }
+                  },
+                  "updated": false,
+                  "initialized": false,
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  }
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "2": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "col_name": "string",
+                      "data_type": "string",
+                      "comment": "string"
+                    },
+                    "updated": true
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "_c0\n9217528\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "col_name\tdata_type\tcomment\nvehicle_id\tbigint\t\ntrip_id\tstring\t\ndatetime\tbigint\t\nprevious_velocity\tdouble\t\nvelocity\tdouble\t\nacceleration\tdouble\t\nacceleration_group\tbigint\t\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1622943017719_414551471",
+      "id": "paragraph_1622943017719_414551471",
+      "dateCreated": "2021-06-06 01:30:17.719",
+      "dateStarted": "2021-06-16 23:27:52.970",
+      "dateFinished": "2021-06-16 23:27:53.355",
+      "status": "FINISHED"
+    },
+    {
+      "title": "2. engine_temp Builder Query",
+      "text": "%hive\n\nCREATE TABLE IF NOT EXISTS engine_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    week_start_date,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252)\n        ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower)\n        ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm)\n        ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS week_start_date,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0\n            THEN vehicle.make\n            ELSE \"undefined\"\n            END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0\n            THEN vehicle.max_torque\n            ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:28:56.791",
+      "progress": 0,
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 11.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "tableHide": false,
+        "editorHide": true,
+        "title": true
       },
       "settings": {
         "params": {},
@@ -65,33 +313,147 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "Query executed successfully. Affected rows : -1"
+            "data": "INFO  : Compiling command(queryId\u003dhdfs_20210616232801_a2be562b-592c-4de7-a9cc-9d677b89f8f7): \n\nCREATE TABLE IF NOT EXISTS engine_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    week_start_date,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252)\n        ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower)\n        ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm)\n        ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS week_start_date,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0\n            THEN vehicle.make\n            ELSE \"undefined\"\n            END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0\n            THEN vehicle.max_torque\n            ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : Semantic Analysis Completed (retrial \u003d false)\nINFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:vehicle_id, type:bigint, comment:null), FieldSchema(name:trip_id, type:string, comment:null), FieldSchema(name:datetime, type:bigint, comment:null), FieldSchema(name:timestamp_pst, type:timestamp, comment:null), FieldSchema(name:week_start_date, type:date, comment:null), FieldSchema(name:eng_load, type:double, comment:null), FieldSchema(name:rpm, type:double, comment:null), FieldSchema(name:vehicle_make, type:string, comment:null), FieldSchema(name:vehicle_max_torque, type:string, comment:null), FieldSchema(name:vehicle_max_horsepower, type:string, comment:null), FieldSchema(name:vehicle_max_horsepower_rpm, type:string, comment:null), FieldSchema(name:active_horsepower, type:string, comment:null), FieldSchema(name:horsepower_utilization, type:string, comment:null), FieldSchema(name:torque_utilization, type:double, comment:null), FieldSchema(name:rpm_utilization, type:string, comment:null)], properties:null)\nINFO  : Completed compiling command(queryId\u003dhdfs_20210616232801_a2be562b-592c-4de7-a9cc-9d677b89f8f7); Time taken: 0.182 seconds\nINFO  : Concurrency mode is disabled, not creating a lock manager\nINFO  : Executing command(queryId\u003dhdfs_20210616232801_a2be562b-592c-4de7-a9cc-9d677b89f8f7): \n\nCREATE TABLE IF NOT EXISTS engine_temp\nSTORED AS PARQUET LOCATION \u0027hdfs:///user/hive/warehouse/engine_temp\u0027 TBLPROPERTIES (\"parquet.compression\"\u003d\"SNAPPY\")\nAS SELECT vehicle_id,\n    trip_id,\n    datetime,\n    timestamp_pst,\n    week_start_date,\n    eng_load,\n    rpm,\n    vehicle_make,\n    vehicle_max_torque,\n    vehicle_max_horsepower,\n    vehicle_max_horsepower_rpm,\n    CASE WHEN t1.vehicle_max_torque !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252)\n        ELSE t1.vehicle_max_torque END AS active_horsepower,\n    CASE WHEN t1.vehicle_max_horsepower !\u003d 0 THEN (eng_load / 255 * t1.vehicle_max_torque * rpm / 5252 / t1.vehicle_max_horsepower)\n        ELSE t1.vehicle_max_horsepower END AS horsepower_utilization,\n    (eng_load / 255) AS torque_utilization,\n    CASE WHEN t1.vehicle_max_horsepower_rpm !\u003d 0 THEN (rpm / t1.vehicle_max_horsepower_rpm)\n        ELSE t1.vehicle_max_horsepower_rpm END AS rpm_utilization\nFROM (\n    SELECT drive.vehicle_id,\n        drive.trip_id,\n        drive.datetime,\n        FROM_UTC_TIMESTAMP(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), \u0027PST\u0027) as timestamp_pst,\n        DATE_SUB(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT)), CAST(FROM_UNIXTIME(CAST(datetime/1000 AS BIGINT), \u0027u\u0027) AS INT) - 1) AS week_start_date,\n        drive.eng_load,\n        drive.rpm,\n        CASE WHEN LENGTH(vehicle.make) \u003e 0\n            THEN vehicle.make\n            ELSE \"undefined\"\n            END AS vehicle_make,\n        CASE WHEN LENGTH(vehicle.max_torque) \u003e 0\n            THEN vehicle.max_torque\n            ELSE 0 END AS vehicle_max_torque,\n        CASE WHEN LENGTH(vehicle.max_horsepower) \u003e 0 THEN vehicle.max_horsepower ELSE 0 END AS vehicle_max_horsepower,\n        CASE WHEN LENGTH(vehicle.max_horsepower_rpm) \u003e 0 THEN vehicle.max_horsepower_rpm ELSE 0 END AS vehicle_max_horsepower_rpm\n    FROM drive\n    LEFT OUTER JOIN vehicle\n    ON drive.vehicle_id \u003d vehicle.vehicle_id\n) t1\nINFO  : Query ID \u003d hdfs_20210616232801_a2be562b-592c-4de7-a9cc-9d677b89f8f7\nINFO  : Total jobs \u003d 2\nINFO  : Launching Job 1 out of 2\nINFO  : Starting task [Stage-3:MAPRED] in parallel\nINFO  : Launching Job 2 out of 2\nINFO  : Starting task [Stage-1:MAPRED] in parallel\nINFO  : Starting task [Stage-0:MOVE] in parallel\n\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : -1\nINFO  : Starting task [Stage-4:DDL] in serial mode\nINFO  : Starting task [Stage-2:STATS] in parallel\nINFO  : Completed executing command(queryId\u003dhdfs_20210616232801_a2be562b-592c-4de7-a9cc-9d677b89f8f7); Time taken: 494.069 seconds\nINFO  : OK\nINFO  : Concurrency mode is disabled, not creating a lock manager\n"
           }
         ]
       },
       "apps": [],
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1579522541215_660352929",
       "id": "20200120-121541_636784344",
       "dateCreated": "2020-01-20 12:15:41.215",
-      "dateStarted": "2020-04-14 14:29:17.339",
-      "dateFinished": "2020-04-14 14:37:11.688",
+      "dateStarted": "2021-06-16 23:28:01.206",
+      "dateFinished": "2021-06-16 23:36:15.493",
+      "status": "FINISHED"
+    },
+    {
+      "title": "engine_temp Validator",
+      "text": "%hive\nSELECT COUNT(*) FROM engine_temp AS drive_temp_row_count;\nDESCRIBE engine_temp",
+      "user": "anonymous",
+      "dateUpdated": "2021-06-16 23:51:11.355",
+      "progress": 0,
+      "config": {
+        "lineNumbers": false,
+        "tableHide": false,
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 114.028,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "_c0": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 354.028,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "col_name": "string",
+                      "data_type": "string",
+                      "comment": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "_c0\n9217528\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "col_name\tdata_type\tcomment\nvehicle_id\tbigint\t\ntrip_id\tstring\t\ndatetime\tbigint\t\ntimestamp_pst\ttimestamp\t\nweek_start_date\tdate\t\neng_load\tdouble\t\nrpm\tdouble\t\nvehicle_make\tstring\t\nvehicle_max_torque\tstring\t\nvehicle_max_horsepower\tstring\t\nvehicle_max_horsepower_rpm\tstring\t\nactive_horsepower\tstring\t\nhorsepower_utilization\tstring\t\ntorque_utilization\tdouble\t\nrpm_utilization\tstring\t\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1622944702025_1030421080",
+      "id": "paragraph_1622944702025_1030421080",
+      "dateCreated": "2021-06-06 01:58:22.025",
+      "dateStarted": "2021-06-16 23:51:11.359",
+      "dateFinished": "2021-06-16 23:51:11.523",
       "status": "FINISHED"
     },
     {
       "text": "%hive\n",
       "user": "anonymous",
-      "dateUpdated": "2020-01-23 00:34:50.697",
+      "dateUpdated": "2021-06-06 02:17:49.552",
+      "progress": 0,
       "config": {},
       "settings": {
         "params": {},
         "forms": {}
       },
       "apps": [],
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1579739690689_1975482392",
-      "id": "20200123-003450_705134689",
-      "dateCreated": "2020-01-23 00:34:50.689",
+      "jobName": "paragraph_1622945869551_623304216",
+      "id": "paragraph_1622945869551_623304216",
+      "dateCreated": "2021-06-06 02:17:49.552",
       "status": "READY"
     }
   ],
@@ -101,9 +463,7 @@
   "version": "0.9.0-preview1",
   "noteParams": {},
   "noteForms": {},
-  "angularObjects": {
-    "hive:shared_process": []
-  },
+  "angularObjects": {},
   "config": {
     "isZeppelinNotebookCronEnable": false
   },
